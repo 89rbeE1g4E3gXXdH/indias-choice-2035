@@ -3,87 +3,139 @@ import { GameIntro } from "@/components/GameIntro";
 import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
 
-type GameStage = "intro" | "round1" | "round2" | "round3" | "results";
+type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "results";
 
 interface Choices {
-  education: string;
-  sustainability: string;
-  economy: string;
+  medicalTech: string;
+  aerospace: string;
+  aiRobotics: string;
+  quantumComputing: string;
+  biotechnology: string;
 }
 
 const rounds = [
   {
     number: 1,
-    title: "EDUCATION REFORMS",
-    question: "🎓 What kind of education system should India focus on?",
+    title: "MEDICAL TECHNOLOGY",
+    question: "🏥 How should India revolutionize healthcare technology?",
     choices: [
       {
-        icon: "🧠",
-        title: "Skill-Based Learning",
-        description: "Practical skills, internships, real-world knowledge",
-        value: "skill-based"
+        icon: "🤖",
+        title: "AI-Powered Diagnostics",
+        description: "Machine learning for disease detection and treatment",
+        value: "ai-diagnostics"
       },
       {
-        icon: "📚",
-        title: "Traditional Academics",
-        description: "Emphasis on history, literature, core subjects",
-        value: "traditional"
+        icon: "🧬",
+        title: "Genetic Medicine",
+        description: "Personalized treatments and gene therapy",
+        value: "genetic-medicine"
       },
       {
-        icon: "💻",
-        title: "Tech & Innovation Driven",
-        description: "AI, Robotics, Coding from early classes",
-        value: "tech-driven"
+        icon: "📱",
+        title: "Telemedicine Network",
+        description: "Remote healthcare access for rural areas",
+        value: "telemedicine"
       }
     ]
   },
   {
     number: 2,
-    title: "SUSTAINABILITY & ENVIRONMENT",
-    question: "🌿 How should India approach environmental policies?",
+    title: "AEROSPACE & SPACE TECH",
+    question: "🚀 What should be India's space exploration priority?",
     choices: [
       {
-        icon: "☀️",
-        title: "Green Energy Revolution",
-        description: "Solar, wind, hydro power scaling nationwide",
-        value: "green-energy"
+        icon: "🛰️",
+        title: "Satellite Network",
+        description: "Communication, GPS, and monitoring systems",
+        value: "satellite-network"
       },
       {
-        icon: "🚯",
-        title: "Strict Environmental Laws",
-        description: "Hefty fines, pollution control, tree planting",
-        value: "strict-laws"
+        icon: "🌙",
+        title: "Moon & Mars Missions",
+        description: "Deep space exploration and colonization",
+        value: "deep-space"
       },
       {
-        icon: "♻️",
-        title: "Grassroots Movements",
-        description: "Community-driven eco programs",
-        value: "grassroots"
+        icon: "✈️",
+        title: "Commercial Space Travel",
+        description: "Space tourism and private sector partnerships",
+        value: "commercial-space"
       }
     ]
   },
   {
     number: 3,
-    title: "ECONOMIC GROWTH STRATEGY",
-    question: "📈 What economic path should India follow?",
+    title: "AI & ROBOTICS",
+    question: "🤖 How should India integrate AI and robotics?",
     choices: [
       {
         icon: "🏭",
-        title: "Industrial Expansion",
-        description: "Mega factories, export-led growth",
-        value: "industrial"
+        title: "Industrial Automation",
+        description: "Smart factories and robotic manufacturing",
+        value: "industrial-ai"
       },
       {
-        icon: "🧑‍💻",
-        title: "Digital Economy Focus",
-        description: "Remote work, startups, global tech hub",
-        value: "digital"
+        icon: "🏠",
+        title: "Consumer AI Products",
+        description: "Smart homes, personal assistants, daily tech",
+        value: "consumer-ai"
       },
       {
-        icon: "🧘",
-        title: "Inclusive & Balanced Growth",
-        description: "Rural jobs, healthcare, social equity",
-        value: "inclusive"
+        icon: "🔬",
+        title: "Research & Development",
+        description: "AI labs, machine learning innovation centers",
+        value: "ai-research"
+      }
+    ]
+  },
+  {
+    number: 4,
+    title: "QUANTUM COMPUTING",
+    question: "⚛️ Where should India invest in quantum technology?",
+    choices: [
+      {
+        icon: "🔐",
+        title: "Quantum Cryptography",
+        description: "Unhackable security and data protection",
+        value: "quantum-security"
+      },
+      {
+        icon: "💊",
+        title: "Drug Discovery",
+        description: "Quantum simulations for medicine development",
+        value: "quantum-medicine"
+      },
+      {
+        icon: "🌐",
+        title: "Quantum Internet",
+        description: "Next-gen communication infrastructure",
+        value: "quantum-internet"
+      }
+    ]
+  },
+  {
+    number: 5,
+    title: "BIOTECHNOLOGY",
+    question: "🧬 What biotech frontier should India lead?",
+    choices: [
+      {
+        icon: "🌾",
+        title: "Agricultural Biotech",
+        description: "Climate-resistant crops and food security",
+        value: "agri-biotech"
+      },
+      {
+        icon: "💉",
+        title: "Vaccine Development",
+        description: "Rapid response to pandemics and diseases",
+        value: "vaccine-dev"
+      },
+      {
+        icon: "♻️",
+        title: "Bio-Based Materials",
+        description: "Sustainable plastics and biodegradable products",
+        value: "bio-materials"
       }
     ]
   }
@@ -92,9 +144,11 @@ const rounds = [
 const Index = () => {
   const [stage, setStage] = useState<GameStage>("intro");
   const [choices, setChoices] = useState<Choices>({
-    education: "",
-    sustainability: "",
-    economy: ""
+    medicalTech: "",
+    aerospace: "",
+    aiRobotics: "",
+    quantumComputing: "",
+    biotechnology: ""
   });
 
   const handleStart = () => {
@@ -102,22 +156,38 @@ const Index = () => {
   };
 
   const handleRound1Choice = (choice: string) => {
-    setChoices(prev => ({ ...prev, education: choice }));
+    setChoices(prev => ({ ...prev, medicalTech: choice }));
     setStage("round2");
   };
 
   const handleRound2Choice = (choice: string) => {
-    setChoices(prev => ({ ...prev, sustainability: choice }));
+    setChoices(prev => ({ ...prev, aerospace: choice }));
     setStage("round3");
   };
 
   const handleRound3Choice = (choice: string) => {
-    setChoices(prev => ({ ...prev, economy: choice }));
+    setChoices(prev => ({ ...prev, aiRobotics: choice }));
+    setStage("round4");
+  };
+
+  const handleRound4Choice = (choice: string) => {
+    setChoices(prev => ({ ...prev, quantumComputing: choice }));
+    setStage("round5");
+  };
+
+  const handleRound5Choice = (choice: string) => {
+    setChoices(prev => ({ ...prev, biotechnology: choice }));
     setStage("results");
   };
 
   const handleReplay = () => {
-    setChoices({ education: "", sustainability: "", economy: "" });
+    setChoices({
+      medicalTech: "",
+      aerospace: "",
+      aiRobotics: "",
+      quantumComputing: "",
+      biotechnology: ""
+    });
     setStage("intro");
   };
 
@@ -127,6 +197,8 @@ const Index = () => {
       {stage === "round1" && <GameRound round={rounds[0]} onChoice={handleRound1Choice} />}
       {stage === "round2" && <GameRound round={rounds[1]} onChoice={handleRound2Choice} />}
       {stage === "round3" && <GameRound round={rounds[2]} onChoice={handleRound3Choice} />}
+      {stage === "round4" && <GameRound round={rounds[3]} onChoice={handleRound4Choice} />}
+      {stage === "round5" && <GameRound round={rounds[4]} onChoice={handleRound5Choice} />}
       {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
     </>
   );

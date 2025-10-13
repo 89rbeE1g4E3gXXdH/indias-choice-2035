@@ -19,35 +19,51 @@ serve(async (req) => {
     }
 
     // Build detailed prompt based on choices
-    const educationMap: Record<string, string> = {
-      'skill-based': 'modern vocational training centers with students learning practical skills',
-      'traditional': 'grand universities with classical architecture and students in traditional study',
-      'tech-driven': 'futuristic classrooms with AI, robotics, and holographic displays',
-      'no_choice': 'balanced educational institutions'
+    const medicalTechMap: Record<string, string> = {
+      'ai-diagnostics': 'advanced AI-powered medical diagnostic centers with holographic displays',
+      'genetic-medicine': 'cutting-edge genetic research labs with DNA sequencing equipment',
+      'telemedicine': 'modern telemedicine hubs connecting rural and urban healthcare',
+      'no_choice': 'standard healthcare facilities'
     };
 
-    const sustainabilityMap: Record<string, string> = {
-      'green-energy': 'massive solar farms and wind turbines across landscapes',
-      'strict-laws': 'pristine environment with lush greenery and clean cities',
-      'grassroots': 'community gardens and sustainable villages with nature integration',
-      'no_choice': 'eco-conscious urban planning'
+    const aerospaceMap: Record<string, string> = {
+      'satellite-network': 'massive satellite control centers and launch facilities',
+      'deep-space': 'space exploration headquarters with Mars mission displays',
+      'commercial-space': 'futuristic spaceports with commercial spacecraft',
+      'no_choice': 'basic space technology infrastructure'
     };
 
-    const economyMap: Record<string, string> = {
-      'industrial': 'advanced manufacturing hubs with smart factories',
-      'digital': 'tech campuses and digital innovation centers with startup culture',
-      'inclusive': 'thriving communities with healthcare, employment across rural and urban',
-      'no_choice': 'balanced economic development'
+    const aiRoboticsMap: Record<string, string> = {
+      'industrial-ai': 'smart automated factories with robotic assembly lines',
+      'consumer-ai': 'smart homes with AI assistants and integrated technology',
+      'ai-research': 'advanced AI research centers with quantum computers',
+      'no_choice': 'moderate AI integration'
     };
 
-    const prompt = `Create a stunning, photorealistic vision of India in 2035. 
-    Show ${educationMap[choices.education] || educationMap['no_choice']}, 
-    ${sustainabilityMap[choices.sustainability] || sustainabilityMap['no_choice']}, and 
-    ${economyMap[choices.economy] || economyMap['no_choice']}. 
+    const quantumComputingMap: Record<string, string> = {
+      'quantum-security': 'ultra-secure quantum data centers with encryption systems',
+      'quantum-medicine': 'quantum computing labs for drug discovery and molecular simulation',
+      'quantum-internet': 'next-generation quantum communication networks',
+      'no_choice': 'early-stage quantum facilities'
+    };
+
+    const biotechnologyMap: Record<string, string> = {
+      'agri-biotech': 'advanced agricultural biotech farms with climate-resistant crops',
+      'vaccine-dev': 'state-of-the-art vaccine research and production facilities',
+      'bio-materials': 'eco-friendly bioplastic manufacturing and sustainable material labs',
+      'no_choice': 'conventional biotech research'
+    };
+
+    const prompt = `Create a stunning, photorealistic vision of India in 2035 focused on technological advancement. 
+    Show ${medicalTechMap[choices.medicalTech] || medicalTechMap['no_choice']}, 
+    ${aerospaceMap[choices.aerospace] || aerospaceMap['no_choice']}, 
+    ${aiRoboticsMap[choices.aiRobotics] || aiRoboticsMap['no_choice']},
+    ${quantumComputingMap[choices.quantumComputing] || quantumComputingMap['no_choice']}, and
+    ${biotechnologyMap[choices.biotechnology] || biotechnologyMap['no_choice']}. 
     
-    The image should be vibrant, optimistic, and showcase India's cultural heritage merged with futuristic progress. 
-    Include iconic Indian architecture elements, diverse people, and a sense of prosperity. 
-    Cinematic lighting, ultra-high detail, inspiring and hopeful atmosphere.`;
+    The image should be vibrant, futuristic, and showcase India as a global technology leader merged with cultural heritage. 
+    Include iconic Indian architecture elements, diverse people using advanced technology, and a sense of innovation and prosperity. 
+    Cinematic lighting, ultra-high detail, inspiring sci-fi atmosphere with an Indian aesthetic.`;
 
     console.log('Generating image with prompt:', prompt);
 

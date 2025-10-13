@@ -22,11 +22,11 @@ interface GameRoundProps {
 }
 
 export const GameRound = ({ round, onChoice }: GameRoundProps) => {
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
 
   useEffect(() => {
-    setTimeLeft(30);
+    setTimeLeft(10);
     setSelectedChoice(null);
   }, [round]);
 
@@ -48,7 +48,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
     setTimeout(() => onChoice(choice), 500);
   };
 
-  const progressValue = (timeLeft / 30) * 100;
+  const progressValue = (timeLeft / 10) * 100;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-6 animate-fade-in">

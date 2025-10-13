@@ -6,9 +6,11 @@ import { useToast } from "@/hooks/use-toast";
 
 interface GameResultsProps {
   choices: {
-    education: string;
-    sustainability: string;
-    economy: string;
+    medicalTech: string;
+    aerospace: string;
+    aiRobotics: string;
+    quantumComputing: string;
+    biotechnology: string;
   };
   onReplay: () => void;
 }
@@ -52,52 +54,78 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
 
   const getOutcomes = () => {
     const outcomes = {
-      'skill-based': {
-        title: '92% Youth Employment',
-        description: 'Vocational training created a workforce ready for modern industries. Manufacturing and service sectors boomed with skilled workers.'
+      'ai-diagnostics': {
+        title: '95% Disease Detection Accuracy',
+        description: 'AI-powered diagnostics revolutionized healthcare. Early disease detection saved millions of lives annually.'
       },
-      'traditional': {
-        title: 'Strong Cultural Identity',
-        description: 'Classical education preserved India\'s heritage while maintaining 78% literacy rate. Values-based learning shaped responsible citizens.'
+      'genetic-medicine': {
+        title: 'Personalized Healthcare Leader',
+        description: 'Gene therapy cured 40+ genetic diseases. India became the global hub for genetic medicine research.'
       },
-      'tech-driven': {
-        title: 'Global Innovation Hub',
-        description: 'AI and robotics education made India a leader in tech. Students from 50+ countries now study here.'
+      'telemedicine': {
+        title: 'Healthcare Access for All',
+        description: 'Rural areas gained instant medical access. Doctor shortage eliminated through remote consultations.'
       },
-      'green-energy': {
-        title: '80% Renewable Energy',
-        description: 'Massive solar and wind infrastructure cut carbon emissions by 65%. Energy exports now fuel the economy.'
+      'satellite-network': {
+        title: 'Global Communication Hub',
+        description: '500+ satellites provide nationwide coverage. India became the preferred satellite launch partner globally.'
       },
-      'strict-laws': {
-        title: 'Cleanest Air in Asia',
-        description: 'Environmental regulations transformed cities. Wildlife populations recovered, eco-tourism thrived.'
+      'deep-space': {
+        title: 'Space Exploration Pioneer',
+        description: 'Successful Mars colony established. India leads international deep space missions consortium.'
       },
-      'grassroots': {
-        title: 'Self-Sustaining Communities',
-        description: 'Village-level sustainability projects created local prosperity. Urban-rural divide significantly narrowed.'
+      'commercial-space': {
+        title: '$50B Space Tourism Industry',
+        description: 'Space tourism brought economic boom. 50,000 annual space travelers and 200,000 jobs created.'
       },
-      'industrial': {
-        title: 'Manufacturing Giant',
-        description: 'Smart factories made India the 2nd largest exporter. 45 million manufacturing jobs created.'
+      'industrial-ai': {
+        title: 'Manufacturing Efficiency +300%',
+        description: 'Automated factories dominate exports. India became the world\'s most efficient manufacturer.'
       },
-      'digital': {
-        title: 'Digital Economy Leader',
-        description: '250,000 startups launched. India became the global center for fintech, AI, and digital services.'
+      'consumer-ai': {
+        title: 'Smart Living Standard',
+        description: 'AI assistants in 80% of homes. Quality of life improved dramatically through intelligent automation.'
       },
-      'inclusive': {
-        title: 'Zero Poverty Achieved',
-        description: 'Universal healthcare and employment programs lifted all citizens. Income inequality dropped 40%.'
+      'ai-research': {
+        title: 'AI Innovation Capital',
+        description: 'Breakthrough AI models developed here. 60% of global AI patents now Indian.'
+      },
+      'quantum-security': {
+        title: 'Unhackable Infrastructure',
+        description: 'Quantum encryption secured all systems. India became the world\'s safest digital economy.'
+      },
+      'quantum-medicine': {
+        title: 'Drug Discovery Revolution',
+        description: 'Quantum computing cut drug development time by 90%. 200+ new medicines discovered.'
+      },
+      'quantum-internet': {
+        title: 'Next-Gen Internet Leader',
+        description: 'Quantum internet deployed nationwide. Data speeds 1000x faster than traditional networks.'
+      },
+      'agri-biotech': {
+        title: 'Food Security Achieved',
+        description: 'Climate-resistant crops ended hunger. India now exports food to 80+ countries.'
+      },
+      'vaccine-dev': {
+        title: 'Pandemic Response Leader',
+        description: 'Rapid vaccine platform saved millions. India supplies 70% of world\'s vaccines.'
+      },
+      'bio-materials': {
+        title: 'Zero Plastic Waste',
+        description: 'Biodegradable materials replaced all plastics. Pollution eliminated, oceans recovered.'
       },
       'no_choice': {
-        title: 'Mixed Results',
-        description: '⏰ Lack of decisive leadership led to moderate progress across all sectors without breakthrough achievements.'
+        title: 'Missed Opportunity',
+        description: '⏰ Indecision led to moderate progress. India followed instead of leading technological revolution.'
       }
     };
 
     return {
-      education: outcomes[choices.education as keyof typeof outcomes] || outcomes['no_choice'],
-      sustainability: outcomes[choices.sustainability as keyof typeof outcomes] || outcomes['no_choice'],
-      economy: outcomes[choices.economy as keyof typeof outcomes] || outcomes['no_choice'],
+      medicalTech: outcomes[choices.medicalTech as keyof typeof outcomes] || outcomes['no_choice'],
+      aerospace: outcomes[choices.aerospace as keyof typeof outcomes] || outcomes['no_choice'],
+      aiRobotics: outcomes[choices.aiRobotics as keyof typeof outcomes] || outcomes['no_choice'],
+      quantumComputing: outcomes[choices.quantumComputing as keyof typeof outcomes] || outcomes['no_choice'],
+      biotechnology: outcomes[choices.biotechnology as keyof typeof outcomes] || outcomes['no_choice'],
     };
   };
 
@@ -132,31 +160,47 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
             )}
             
             <div className="p-8">
-              <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - The Results:</h2>
+              <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - Technology Revolution Results:</h2>
               
               <div className="space-y-4">
                 <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🎓</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.education.title}</h3>
+                    <span className="text-2xl">🏥</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.medicalTech.title}</h3>
                   </div>
-                  <p className="text-muted-foreground ml-9">{outcomes.education.description}</p>
+                  <p className="text-muted-foreground ml-9">{outcomes.medicalTech.description}</p>
                 </div>
 
                 <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🌿</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.sustainability.title}</h3>
+                    <span className="text-2xl">🚀</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.aerospace.title}</h3>
                   </div>
-                  <p className="text-muted-foreground ml-9">{outcomes.sustainability.description}</p>
+                  <p className="text-muted-foreground ml-9">{outcomes.aerospace.description}</p>
                 </div>
 
                 <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">💼</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.economy.title}</h3>
+                    <span className="text-2xl">🤖</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.aiRobotics.title}</h3>
                   </div>
-                  <p className="text-muted-foreground ml-9">{outcomes.economy.description}</p>
+                  <p className="text-muted-foreground ml-9">{outcomes.aiRobotics.description}</p>
+                </div>
+
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">⚛️</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.quantumComputing.title}</h3>
+                  </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.quantumComputing.description}</p>
+                </div>
+
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">🧬</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.biotechnology.title}</h3>
+                  </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.biotechnology.description}</p>
                 </div>
               </div>
             </div>
@@ -177,7 +221,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
             size="lg"
             className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
             onClick={() => {
-              const text = `I shaped India's future in 2035! Results: ${outcomes.education.title}, ${outcomes.sustainability.title}, ${outcomes.economy.title}. Build your own future at ${window.location.href}`;
+              const text = `I shaped India's tech future in 2035! Results: ${outcomes.medicalTech.title}, ${outcomes.aerospace.title}, ${outcomes.aiRobotics.title}. Build your own future at ${window.location.href}`;
               navigator.clipboard.writeText(text);
               toast({
                 title: "Copied!",
