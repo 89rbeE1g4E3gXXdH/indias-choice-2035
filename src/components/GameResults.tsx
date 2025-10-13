@@ -54,7 +54,8 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
       'grassroots': 'sustainable practices embedded in every community',
       'industrial': 'manufacturing powerhouse driving global trade',
       'digital': 'digital innovation hub connecting the world',
-      'inclusive': 'prosperous society with opportunities for all'
+      'inclusive': 'prosperous society with opportunities for all',
+      'no_choice': '⏰ No decision made (time ran out)'
     };
 
     return {
