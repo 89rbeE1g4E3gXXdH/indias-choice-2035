@@ -50,28 +50,58 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     }
   };
 
-  const getVisionDescription = () => {
-    const descriptions = {
-      'skill-based': 'highly skilled workforce ready for the future',
-      'traditional': 'strong foundation in core knowledge and values',
-      'tech-driven': 'technological innovation leading the way',
-      'green-energy': 'powered by clean, renewable energy',
-      'strict-laws': 'pristine environment protected by strong regulations',
-      'grassroots': 'sustainable practices embedded in every community',
-      'industrial': 'manufacturing powerhouse driving global trade',
-      'digital': 'digital innovation hub connecting the world',
-      'inclusive': 'prosperous society with opportunities for all',
-      'no_choice': '⏰ No decision made (time ran out)'
+  const getOutcomes = () => {
+    const outcomes = {
+      'skill-based': {
+        title: '92% Youth Employment',
+        description: 'Vocational training created a workforce ready for modern industries. Manufacturing and service sectors boomed with skilled workers.'
+      },
+      'traditional': {
+        title: 'Strong Cultural Identity',
+        description: 'Classical education preserved India\'s heritage while maintaining 78% literacy rate. Values-based learning shaped responsible citizens.'
+      },
+      'tech-driven': {
+        title: 'Global Innovation Hub',
+        description: 'AI and robotics education made India a leader in tech. Students from 50+ countries now study here.'
+      },
+      'green-energy': {
+        title: '80% Renewable Energy',
+        description: 'Massive solar and wind infrastructure cut carbon emissions by 65%. Energy exports now fuel the economy.'
+      },
+      'strict-laws': {
+        title: 'Cleanest Air in Asia',
+        description: 'Environmental regulations transformed cities. Wildlife populations recovered, eco-tourism thrived.'
+      },
+      'grassroots': {
+        title: 'Self-Sustaining Communities',
+        description: 'Village-level sustainability projects created local prosperity. Urban-rural divide significantly narrowed.'
+      },
+      'industrial': {
+        title: 'Manufacturing Giant',
+        description: 'Smart factories made India the 2nd largest exporter. 45 million manufacturing jobs created.'
+      },
+      'digital': {
+        title: 'Digital Economy Leader',
+        description: '250,000 startups launched. India became the global center for fintech, AI, and digital services.'
+      },
+      'inclusive': {
+        title: 'Zero Poverty Achieved',
+        description: 'Universal healthcare and employment programs lifted all citizens. Income inequality dropped 40%.'
+      },
+      'no_choice': {
+        title: 'Mixed Results',
+        description: '⏰ Lack of decisive leadership led to moderate progress across all sectors without breakthrough achievements.'
+      }
     };
 
     return {
-      education: descriptions[choices.education as keyof typeof descriptions] || choices.education,
-      sustainability: descriptions[choices.sustainability as keyof typeof descriptions] || choices.sustainability,
-      economy: descriptions[choices.economy as keyof typeof descriptions] || choices.economy,
+      education: outcomes[choices.education as keyof typeof outcomes] || outcomes['no_choice'],
+      sustainability: outcomes[choices.sustainability as keyof typeof outcomes] || outcomes['no_choice'],
+      economy: outcomes[choices.economy as keyof typeof outcomes] || outcomes['no_choice'],
     };
   };
 
-  const vision = getVisionDescription();
+  const outcomes = getOutcomes();
 
   return (
     <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in">
@@ -102,31 +132,31 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
             )}
             
             <div className="p-8">
-              <h2 className="text-2xl font-bold mb-6 text-foreground">Your Vision Created:</h2>
+              <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - The Results:</h2>
               
               <div className="space-y-4">
-                <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
-                  <span className="text-2xl">🎓</span>
-                  <div>
-                    <p className="font-semibold text-foreground">Education</p>
-                    <p className="text-muted-foreground capitalize">{vision.education}</p>
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">🎓</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.education.title}</h3>
                   </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.education.description}</p>
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
-                  <span className="text-2xl">🌿</span>
-                  <div>
-                    <p className="font-semibold text-foreground">Environment</p>
-                    <p className="text-muted-foreground capitalize">{vision.sustainability}</p>
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">🌿</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.sustainability.title}</h3>
                   </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.sustainability.description}</p>
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-muted rounded-lg">
-                  <span className="text-2xl">💼</span>
-                  <div>
-                    <p className="font-semibold text-foreground">Economy</p>
-                    <p className="text-muted-foreground capitalize">{vision.economy}</p>
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">💼</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.economy.title}</h3>
                   </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.economy.description}</p>
                 </div>
               </div>
             </div>
@@ -147,9 +177,12 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
             size="lg"
             className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
             onClick={() => {
-              const text = `I shaped India's future! My vision for 2035: ${vision.education}, ${vision.sustainability}, and ${vision.economy}. Build your own future at ${window.location.href}`;
+              const text = `I shaped India's future in 2035! Results: ${outcomes.education.title}, ${outcomes.sustainability.title}, ${outcomes.economy.title}. Build your own future at ${window.location.href}`;
               navigator.clipboard.writeText(text);
-              alert('Vision copied to clipboard! Share it with your friends.');
+              toast({
+                title: "Copied!",
+                description: "Share your vision with friends"
+              });
             }}
           >
             📤 Share Your Vision
