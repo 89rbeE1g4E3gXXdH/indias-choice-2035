@@ -32,9 +32,8 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      if (selectedChoice) {
-        onChoice(selectedChoice);
-      }
+      const choiceToSubmit = selectedChoice || round.choices[0].value;
+      onChoice(choiceToSubmit);
       return;
     }
 
@@ -43,7 +42,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, selectedChoice, onChoice]);
+  }, [timeLeft, selectedChoice, onChoice, round.choices]);
 
   const handleChoice = (choice: string) => {
     setSelectedChoice(choice);
