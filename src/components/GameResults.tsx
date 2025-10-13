@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface GameResultsProps {
   choices: {
@@ -14,6 +16,7 @@ interface GameResultsProps {
 export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     generateVisionImage();
@@ -22,23 +25,26 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const generateVisionImage = async () => {
     setIsLoading(true);
     
-    const prompt = `A futuristic vision of India in 2035, ultra realistic, highly detailed. 
-    Education focus: ${choices.education}. 
-    Environmental approach: ${choices.sustainability}. 
-    Economic strategy: ${choices.economy}. 
-    Show a harmonious blend of modern technology, green landscapes, smart cities with traditional Indian architecture, 
-    youth empowerment, and cultural heritage. Vibrant colors, hopeful and optimistic atmosphere, 
-    cinematic lighting, ultra high resolution.`;
-
     try {
-      // Simulate image generation for now
-      // In production, this would call your image generation API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data, error } = await supabase.functions.invoke('generate-india-vision', {
+        body: { choices }
+      });
+
+      if (error) throw error;
       
-      // For now, using a placeholder
-      setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
+      if (data?.imageUrl) {
+        setImageUrl(data.imageUrl);
+      } else {
+        throw new Error('No image generated');
+      }
     } catch (error) {
       console.error("Error generating image:", error);
+      toast({
+        title: "Image generation failed",
+        description: "Using a default vision instead.",
+        variant: "destructive"
+      });
+      setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
     } finally {
       setIsLoading(false);
     }

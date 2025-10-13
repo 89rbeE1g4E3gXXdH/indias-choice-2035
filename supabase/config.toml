@@ -1,0 +1,4 @@
+project_id = "tdskjxdfdtmtbiimjast"
+
+[functions.generate-india-vision]
+verify_jwt = false
