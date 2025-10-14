@@ -6,17 +6,23 @@ interface GameIntroProps {
 export const GameIntro = ({
   onStart
 }: GameIntroProps) => {
-  return <div className="min-h-screen flex items-center justify-center bg-gradient-hero animate-fade-in">
-      <div className="max-w-4xl mx-auto px-6 text-center">
-        <div className="mb-8 relative">
-          <img src={heroImage} alt="Future India 2035" className="w-full h-64 object-cover rounded-2xl shadow-card mb-8" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent rounded-2xl"></div>
+  return <div className="min-h-screen flex items-center justify-center bg-gradient-hero animate-fade-in overflow-hidden relative">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+        <div className="mb-8 relative group">
+          <img src={heroImage} alt="Future India 2035" className="w-full h-64 object-cover rounded-2xl shadow-card mb-8 transition-transform duration-500 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent rounded-2xl"></div>
         </div>
         
-        <h1 className="text-6xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+        <h1 className="text-7xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
           BUILD THE FUTURE
         </h1>
-        <h2 className="text-4xl font-bold mb-6 text-primary">
+        <h2 className="text-5xl font-bold mb-6 text-primary animate-glow-pulse">
           INDIA 2035 🇮🇳
         </h2>
         
@@ -43,9 +49,17 @@ export const GameIntro = ({
           ⏳ You have 30 seconds per round to decide. Choose wisely.
         </p>
         
-        <Button onClick={onStart} size="lg" className="text-xl px-12 py-6 bg-primary hover:bg-primary-glow shadow-glow transition-all duration-300 hover:scale-105">
+        <Button 
+          onClick={onStart} 
+          size="lg" 
+          className="text-xl px-12 py-6 bg-primary hover:bg-primary-glow shadow-glow transition-all duration-300 hover:scale-110 animate-glow-pulse"
+        >
           🚀 Start Your Journey
         </Button>
+        
+        <div className="mt-8 text-sm text-muted-foreground">
+          <p>🏆 Unlock achievements as you shape India's future</p>
+        </div>
       </div>
     </div>;
 };

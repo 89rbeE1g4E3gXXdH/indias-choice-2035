@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { AchievementBadge, calculateAchievements } from "@/components/AchievementBadge";
 
 interface GameResultsProps {
   choices: {
@@ -19,6 +20,8 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const achievements = calculateAchievements(choices);
+  const unlockedCount = achievements.filter(a => a.unlocked).length;
 
   useEffect(() => {
     generateVisionImage();
@@ -132,8 +135,14 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const outcomes = getOutcomes();
 
   return (
-    <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+      </div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
             🌅 INDIA 2035
@@ -206,6 +215,26 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
             </div>
           </div>
         )}
+
+        {/* Achievements Section */}
+        <div className="bg-card border border-border rounded-2xl p-8 shadow-card mb-8 animate-scale-in" style={{animationDelay: '300ms'}}>
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Sparkles className="w-8 h-8 text-primary" />
+              <h2 className="text-3xl font-bold text-foreground">Achievements Unlocked</h2>
+              <Sparkles className="w-8 h-8 text-primary" />
+            </div>
+            <p className="text-muted-foreground">
+              🏆 You earned {unlockedCount} out of {achievements.length} achievements!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {achievements.map((achievement) => (
+              <AchievementBadge key={achievement.id} achievement={achievement} />
+            ))}
+          </div>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button

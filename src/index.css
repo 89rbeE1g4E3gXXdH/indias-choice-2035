@@ -45,8 +45,13 @@ All colors MUST be HSL.
     
     --shadow-glow: 0 0 40px hsl(25 95% 58% / 0.3);
     --shadow-card: 0 10px 40px hsl(0 0% 0% / 0.5);
+    --shadow-achievement: 0 8px 32px hsl(25 95% 58% / 0.4);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --achievement-gold: 45 100% 60%;
+    --achievement-silver: 0 0% 75%;
+    --achievement-bronze: 25 75% 50%;
   }
 }
 
