@@ -52,7 +52,7 @@ export const GameIntro = ({
         <Button 
           onClick={onStart} 
           size="lg" 
-          className="text-xl px-12 py-6 bg-primary hover:bg-primary-glow shadow-glow transition-all duration-300 hover:scale-110 animate-glow-pulse"
+          className="text-xl px-12 py-6 bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-110 animate-glow-pulse hover:shadow-[0_0_100px_rgba(255,138,0,0.8)]"
         >
           🚀 Start Your Journey
         </Button>

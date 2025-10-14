@@ -220,9 +220,9 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         <div className="bg-card border border-border rounded-2xl p-8 shadow-card mb-8 animate-scale-in" style={{animationDelay: '300ms'}}>
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-3 mb-2">
-              <Sparkles className="w-8 h-8 text-primary" />
-              <h2 className="text-3xl font-bold text-foreground">Achievements Unlocked</h2>
-              <Sparkles className="w-8 h-8 text-primary" />
+              <Sparkles className="w-8 h-8 text-primary animate-glow-pulse drop-shadow-[0_0_20px_rgba(255,138,0,0.8)]" />
+              <h2 className="text-3xl font-bold text-foreground drop-shadow-[0_0_15px_rgba(255,138,0,0.5)]">Achievements Unlocked</h2>
+              <Sparkles className="w-8 h-8 text-primary animate-glow-pulse drop-shadow-[0_0_20px_rgba(255,138,0,0.8)]" />
             </div>
             <p className="text-muted-foreground">
               🏆 You earned {unlockedCount} out of {achievements.length} achievements!
@@ -240,7 +240,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           <Button
             onClick={onReplay}
             size="lg"
-            className="bg-primary hover:bg-primary-glow shadow-glow transition-all duration-300 hover:scale-105"
+            className="bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-105 hover:shadow-[0_0_80px_rgba(255,138,0,0.7)]"
           >
             🔁 Play Again
           </Button>
@@ -248,7 +248,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           <Button
             variant="outline"
             size="lg"
-            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-glow"
             onClick={() => {
               const text = `I shaped India's tech future in 2035! Results: ${outcomes.medicalTech.title}, ${outcomes.aerospace.title}, ${outcomes.aiRobotics.title}. Build your own future at ${window.location.href}`;
               navigator.clipboard.writeText(text);
