@@ -4,6 +4,7 @@ import { Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AchievementBadge, calculateAchievements } from "@/components/AchievementBadge";
+import { Credits } from "@/components/Credits";
 
 interface GameResultsProps {
   choices: {
@@ -260,6 +261,11 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           >
             📤 Share Your Vision
           </Button>
+        </div>
+
+        {/* Credits section */}
+        <div className="mt-16">
+          <Credits />
         </div>
       </div>
     </div>
