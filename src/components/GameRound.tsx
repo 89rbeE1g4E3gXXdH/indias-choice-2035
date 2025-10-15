@@ -24,12 +24,12 @@ interface GameRoundProps {
 }
 
 export const GameRound = ({ round, onChoice }: GameRoundProps) => {
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(30);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [explosion, setExplosion] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    setTimeLeft(10);
+    setTimeLeft(30);
     setSelectedChoice(null);
     setExplosion(null);
   }, [round]);
@@ -60,7 +60,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
     setTimeout(() => onChoice(choice), 500);
   };
 
-  const progressValue = (timeLeft / 10) * 100;
+  const progressValue = (timeLeft / 30) * 100;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
@@ -80,7 +80,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
           <div className="max-w-md mx-auto">
             <div className="flex justify-between items-center mb-2">
               <span className="text-muted-foreground">Time Remaining:</span>
-              <span className={`text-2xl font-bold ${timeLeft <= 10 ? 'text-destructive animate-glow-pulse' : 'text-primary'}`}>
+              <span className={`text-2xl font-bold ${timeLeft <= 5 ? 'text-destructive animate-glow-pulse' : 'text-primary'}`}>
                 ⏰ {timeLeft}s
               </span>
             </div>

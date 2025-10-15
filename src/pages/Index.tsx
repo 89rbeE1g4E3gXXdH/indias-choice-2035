@@ -3,7 +3,7 @@ import { GameIntro } from "@/components/GameIntro";
 import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
 
-type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "results";
+type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "results";
 
 interface Choices {
   medicalTech: string;
@@ -11,6 +11,9 @@ interface Choices {
   aiRobotics: string;
   quantumComputing: string;
   biotechnology: string;
+  greenEnergy: string;
+  smartCities: string;
+  education: string;
 }
 
 const rounds = [
@@ -138,6 +141,81 @@ const rounds = [
         value: "bio-materials"
       }
     ]
+  },
+  {
+    number: 6,
+    title: "GREEN ENERGY & SUSTAINABILITY",
+    question: "🌱 How should India achieve carbon neutrality?",
+    choices: [
+      {
+        icon: "☀️",
+        title: "Solar Revolution",
+        description: "Massive solar farms and rooftop installations",
+        value: "solar-power"
+      },
+      {
+        icon: "💨",
+        title: "Wind & Hydro",
+        description: "Offshore wind farms and hydroelectric dams",
+        value: "wind-hydro"
+      },
+      {
+        icon: "⚡",
+        title: "Nuclear Fusion",
+        description: "Clean nuclear energy and fusion reactors",
+        value: "nuclear-fusion"
+      }
+    ]
+  },
+  {
+    number: 7,
+    title: "SMART CITIES & INFRASTRUCTURE",
+    question: "🏙️ What should define India's smart cities?",
+    choices: [
+      {
+        icon: "🚇",
+        title: "Public Transport",
+        description: "Metro networks, high-speed rail, electric buses",
+        value: "public-transport"
+      },
+      {
+        icon: "🏢",
+        title: "Vertical Cities",
+        description: "Skyscrapers with vertical farms and parks",
+        value: "vertical-cities"
+      },
+      {
+        icon: "🌐",
+        title: "IoT Infrastructure",
+        description: "Connected cities with smart sensors and AI",
+        value: "iot-cities"
+      }
+    ]
+  },
+  {
+    number: 8,
+    title: "EDUCATION & SKILL DEVELOPMENT",
+    question: "📚 How should India transform education?",
+    choices: [
+      {
+        icon: "🎮",
+        title: "Gamified Learning",
+        description: "VR/AR classrooms and interactive education",
+        value: "gamified-learning"
+      },
+      {
+        icon: "🤖",
+        title: "AI Tutors",
+        description: "Personalized AI-powered learning assistants",
+        value: "ai-tutors"
+      },
+      {
+        icon: "💼",
+        title: "Skill Academies",
+        description: "Industry-focused practical training centers",
+        value: "skill-academies"
+      }
+    ]
   }
 ];
 
@@ -148,7 +226,10 @@ const Index = () => {
     aerospace: "",
     aiRobotics: "",
     quantumComputing: "",
-    biotechnology: ""
+    biotechnology: "",
+    greenEnergy: "",
+    smartCities: "",
+    education: ""
   });
 
   const handleStart = () => {
@@ -177,6 +258,21 @@ const Index = () => {
 
   const handleRound5Choice = (choice: string) => {
     setChoices(prev => ({ ...prev, biotechnology: choice }));
+    setStage("round6");
+  };
+
+  const handleRound6Choice = (choice: string) => {
+    setChoices(prev => ({ ...prev, greenEnergy: choice }));
+    setStage("round7");
+  };
+
+  const handleRound7Choice = (choice: string) => {
+    setChoices(prev => ({ ...prev, smartCities: choice }));
+    setStage("round8");
+  };
+
+  const handleRound8Choice = (choice: string) => {
+    setChoices(prev => ({ ...prev, education: choice }));
     setStage("results");
   };
 
@@ -186,7 +282,10 @@ const Index = () => {
       aerospace: "",
       aiRobotics: "",
       quantumComputing: "",
-      biotechnology: ""
+      biotechnology: "",
+      greenEnergy: "",
+      smartCities: "",
+      education: ""
     });
     setStage("intro");
   };
@@ -199,6 +298,9 @@ const Index = () => {
       {stage === "round3" && <GameRound round={rounds[2]} onChoice={handleRound3Choice} />}
       {stage === "round4" && <GameRound round={rounds[3]} onChoice={handleRound4Choice} />}
       {stage === "round5" && <GameRound round={rounds[4]} onChoice={handleRound5Choice} />}
+      {stage === "round6" && <GameRound round={rounds[5]} onChoice={handleRound6Choice} />}
+      {stage === "round7" && <GameRound round={rounds[6]} onChoice={handleRound7Choice} />}
+      {stage === "round8" && <GameRound round={rounds[7]} onChoice={handleRound8Choice} />}
       {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
     </>
   );
