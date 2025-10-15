@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 interface CreditsPerson {
   name: string;
+  role: string;
   delay: number;
 }
 
@@ -14,12 +15,12 @@ export const Credits = () => {
   }, []);
 
   const team: CreditsPerson[] = [
-    { name: "RIVAN", delay: 0 },
-    { name: "SAMANTH", delay: 200 },
-    { name: "AARDRA", delay: 400 },
-    { name: "VARSHINI", delay: 600 },
-    { name: "VED", delay: 800 },
-    { name: "AYAN", delay: 1000 },
+    { name: "RIVAN", role: "⚡ CODER ⚡", delay: 0 },
+    { name: "SAMANTH", role: "🎨 DESIGNER 🎨", delay: 200 },
+    { name: "AARDRA", role: "🎨 DESIGNER 🎨", delay: 400 },
+    { name: "VARSHINI", role: "🎨 DESIGNER 🎨", delay: 600 },
+    { name: "VED", role: "👑 SUPERVISOR & PLANNER 👑", delay: 800 },
+    { name: "AYAN", role: "🎨 DESIGNER 🎨", delay: 1000 },
   ];
 
   return (
@@ -99,9 +100,9 @@ export const Credits = () => {
                   {person.name}
                 </h3>
 
-                {/* Subtitle with animation */}
-                <p className="text-sm text-muted-foreground mt-3 group-hover:text-primary transition-colors duration-300">
-                  ⚡ VISIONARY CREATOR ⚡
+                {/* Role with animation */}
+                <p className="text-sm text-muted-foreground mt-3 group-hover:text-primary transition-colors duration-300 font-semibold">
+                  {person.role}
                 </p>
 
                 {/* Bottom glow bar */}
