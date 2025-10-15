@@ -54,12 +54,36 @@ serve(async (req) => {
       'no_choice': 'conventional biotech research'
     };
 
+    const greenEnergyMap: Record<string, string> = {
+      'solar-power': 'massive solar panel farms covering landscapes with clean energy infrastructure',
+      'wind-hydro': 'towering wind turbines and advanced hydroelectric dams',
+      'nuclear-fusion': 'futuristic fusion reactor facilities with glowing energy cores',
+      'no_choice': 'standard renewable energy setup'
+    };
+
+    const smartCitiesMap: Record<string, string> = {
+      'public-transport': 'elevated metro networks and hyperloop systems connecting cities',
+      'vertical-cities': 'soaring skyscrapers with vertical gardens and sky bridges',
+      'iot-cities': 'smart city infrastructure with glowing sensors and connected systems',
+      'no_choice': 'modern urban development'
+    };
+
+    const educationMap: Record<string, string> = {
+      'gamified-learning': 'VR/AR classrooms with students in immersive holographic environments',
+      'ai-tutors': 'learning centers with AI hologram teachers and personalized education pods',
+      'skill-academies': 'high-tech training facilities with hands-on innovation workshops',
+      'no_choice': 'traditional modern schools'
+    };
+
     const prompt = `Create a stunning, photorealistic vision of India in 2035 focused on technological advancement. 
     Show ${medicalTechMap[choices.medicalTech] || medicalTechMap['no_choice']}, 
     ${aerospaceMap[choices.aerospace] || aerospaceMap['no_choice']}, 
     ${aiRoboticsMap[choices.aiRobotics] || aiRoboticsMap['no_choice']},
-    ${quantumComputingMap[choices.quantumComputing] || quantumComputingMap['no_choice']}, and
-    ${biotechnologyMap[choices.biotechnology] || biotechnologyMap['no_choice']}. 
+    ${quantumComputingMap[choices.quantumComputing] || quantumComputingMap['no_choice']},
+    ${biotechnologyMap[choices.biotechnology] || biotechnologyMap['no_choice']},
+    ${greenEnergyMap[choices.greenEnergy] || greenEnergyMap['no_choice']},
+    ${smartCitiesMap[choices.smartCities] || smartCitiesMap['no_choice']}, and
+    ${educationMap[choices.education] || educationMap['no_choice']}. 
     
     The image should be vibrant, futuristic, and showcase India as a global technology leader merged with cultural heritage. 
     Include iconic Indian architecture elements, diverse people using advanced technology, and a sense of innovation and prosperity. 

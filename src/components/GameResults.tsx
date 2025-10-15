@@ -13,6 +13,9 @@ interface GameResultsProps {
     aiRobotics: string;
     quantumComputing: string;
     biotechnology: string;
+    greenEnergy: string;
+    smartCities: string;
+    education: string;
   };
   onReplay: () => void;
 }
@@ -118,6 +121,42 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         title: 'Zero Plastic Waste',
         description: 'Biodegradable materials replaced all plastics. Pollution eliminated, oceans recovered.'
       },
+      'solar-power': {
+        title: 'Solar Superpower',
+        description: 'World\'s largest solar infrastructure. 100% renewable energy achieved, powering the nation.'
+      },
+      'wind-hydro': {
+        title: 'Clean Energy Leader',
+        description: 'Massive wind farms and hydro plants. Carbon emissions reduced by 90%.'
+      },
+      'nuclear-fusion': {
+        title: 'Fusion Energy Pioneer',
+        description: 'First commercial fusion reactor operational. Unlimited clean energy for all.'
+      },
+      'public-transport': {
+        title: 'Zero Traffic Cities',
+        description: 'Metro in every major city. 80% reduction in private vehicles and pollution.'
+      },
+      'vertical-cities': {
+        title: 'Sustainable Urban Living',
+        description: 'Vertical farms feed cities. Green spaces integrated into every building.'
+      },
+      'iot-cities': {
+        title: 'Most Connected Cities',
+        description: 'AI manages traffic, waste, energy. Cities run at 95% efficiency.'
+      },
+      'gamified-learning': {
+        title: 'Education Revolution',
+        description: 'VR classrooms nationwide. Learning engagement increased 200%.'
+      },
+      'ai-tutors': {
+        title: 'Personalized Learning Era',
+        description: 'Every student has AI mentor. Education gaps eliminated completely.'
+      },
+      'skill-academies': {
+        title: 'Skilled Workforce Leader',
+        description: 'Zero unemployment through skill training. India supplies world\'s top talent.'
+      },
       'no_choice': {
         title: 'Missed Opportunity',
         description: '⏰ Indecision led to moderate progress. India followed instead of leading technological revolution.'
@@ -130,6 +169,9 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
       aiRobotics: outcomes[choices.aiRobotics as keyof typeof outcomes] || outcomes['no_choice'],
       quantumComputing: outcomes[choices.quantumComputing as keyof typeof outcomes] || outcomes['no_choice'],
       biotechnology: outcomes[choices.biotechnology as keyof typeof outcomes] || outcomes['no_choice'],
+      greenEnergy: outcomes[choices.greenEnergy as keyof typeof outcomes] || outcomes['no_choice'],
+      smartCities: outcomes[choices.smartCities as keyof typeof outcomes] || outcomes['no_choice'],
+      education: outcomes[choices.education as keyof typeof outcomes] || outcomes['no_choice'],
     };
   };
 
@@ -211,6 +253,30 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
                     <h3 className="font-bold text-lg text-foreground">{outcomes.biotechnology.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.biotechnology.description}</p>
+                </div>
+
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">🌱</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.greenEnergy.title}</h3>
+                  </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.greenEnergy.description}</p>
+                </div>
+
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">🏙️</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.smartCities.title}</h3>
+                  </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.smartCities.description}</p>
+                </div>
+
+                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-2xl">📚</span>
+                    <h3 className="font-bold text-lg text-foreground">{outcomes.education.title}</h3>
+                  </div>
+                  <p className="text-muted-foreground ml-9">{outcomes.education.description}</p>
                 </div>
               </div>
             </div>
