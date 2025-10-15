@@ -24,12 +24,12 @@ interface GameRoundProps {
 }
 
 export const GameRound = ({ round, onChoice }: GameRoundProps) => {
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(15);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [explosion, setExplosion] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    setTimeLeft(30);
+    setTimeLeft(15);
     setSelectedChoice(null);
     setExplosion(null);
   }, [round]);
@@ -60,7 +60,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
     setTimeout(() => onChoice(choice), 500);
   };
 
-  const progressValue = (timeLeft / 30) * 100;
+  const progressValue = (timeLeft / 15) * 100;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">

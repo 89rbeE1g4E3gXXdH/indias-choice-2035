@@ -37,7 +37,7 @@ export const GameIntro = ({
               <p className="text-lg font-semibold text-primary">🔁 Total Rounds: 8</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-lg font-semibold text-accent">⏱ Timer: 10 seconds each</p>
+              <p className="text-lg font-semibold text-accent">⏱ Timer: 15 seconds each</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-lg font-semibold text-secondary">🎯 Goal: Shape India's Future</p>
@@ -46,7 +46,7 @@ export const GameIntro = ({
         </div>
         
         <p className="text-lg text-muted-foreground mb-8">
-          ⏳ You have 30 seconds per round to decide. Choose wisely.
+          ⏳ You have 15 seconds per round to decide. Choose wisely.
         </p>
         
         <Button 
