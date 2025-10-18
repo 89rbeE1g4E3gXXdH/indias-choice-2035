@@ -112,6 +112,17 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
+      
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Not enough credits. Please add credits to your Lovable workspace to generate images.",
+            errorType: "payment_required"
+          }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
       throw new Error(`AI gateway error: ${response.status}`);
     }
 

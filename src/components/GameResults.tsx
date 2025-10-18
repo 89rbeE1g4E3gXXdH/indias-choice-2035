@@ -46,11 +46,16 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
       } else {
         throw new Error('No image generated');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating image:", error);
+      
+      const errorMessage = error?.message?.includes("credits") 
+        ? "Not enough AI credits. Please add credits to your workspace."
+        : "Image generation failed. Using a default vision instead.";
+      
       toast({
         title: "Image generation failed",
-        description: "Using a default vision instead.",
+        description: errorMessage,
         variant: "destructive"
       });
       setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
