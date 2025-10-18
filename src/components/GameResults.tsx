@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AchievementBadge, calculateAchievements } from "@/components/AchievementBadge";
 import { Credits } from "@/components/Credits";
 
 interface GameResultsProps {
@@ -24,8 +23,6 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const achievements = calculateAchievements(choices);
-  const unlockedCount = achievements.filter(a => a.unlocked).length;
 
   useEffect(() => {
     generateVisionImage();
@@ -295,25 +292,6 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           </div>
         )}
 
-        {/* Achievements Section */}
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-card mb-8 animate-scale-in" style={{animationDelay: '300ms'}}>
-          <div className="text-center mb-6">
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <Sparkles className="w-8 h-8 text-primary animate-glow-pulse drop-shadow-[0_0_20px_rgba(255,138,0,0.8)]" />
-              <h2 className="text-3xl font-bold text-foreground drop-shadow-[0_0_15px_rgba(255,138,0,0.5)]">Achievements Unlocked</h2>
-              <Sparkles className="w-8 h-8 text-primary animate-glow-pulse drop-shadow-[0_0_20px_rgba(255,138,0,0.8)]" />
-            </div>
-            <p className="text-muted-foreground">
-              🏆 You earned {unlockedCount} out of {achievements.length} achievements!
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {achievements.map((achievement) => (
-              <AchievementBadge key={achievement.id} achievement={achievement} />
-            ))}
-          </div>
-        </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
