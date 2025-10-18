@@ -46,7 +46,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
           variant: "destructive"
         });
-        setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
+        setImageUrl("https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop");
         return;
       }
 
@@ -65,7 +65,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         description: "Using a default vision instead.",
         variant: "destructive"
       });
-      setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
+      setImageUrl("https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop");
     } finally {
       setIsLoading(false);
     }
