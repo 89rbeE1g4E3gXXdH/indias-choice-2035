@@ -39,6 +39,17 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         body: { choices }
       });
 
+      // Check for payment/credits error first
+      if (data?.errorType === "payment_required" || data?.error?.includes("credits")) {
+        toast({
+          title: "Not Enough AI Credits",
+          description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
+          variant: "destructive"
+        });
+        setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
+        return;
+      }
+
       if (error) throw error;
       
       if (data?.imageUrl) {
@@ -49,13 +60,9 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     } catch (error: any) {
       console.error("Error generating image:", error);
       
-      const errorMessage = error?.message?.includes("credits") 
-        ? "Not enough AI credits. Please add credits to your workspace."
-        : "Image generation failed. Using a default vision instead.";
-      
       toast({
         title: "Image generation failed",
-        description: errorMessage,
+        description: "Using a default vision instead.",
         variant: "destructive"
       });
       setImageUrl("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop");
