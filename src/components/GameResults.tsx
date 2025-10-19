@@ -29,33 +29,36 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   }, []);
 
   const getFallbackImage = () => {
-    // Select image based on dominant technology choices
-    const techChoices = [
-      choices.medicalTech,
-      choices.aerospace,
-      choices.aiRobotics,
-      choices.quantumComputing,
-      choices.biotechnology,
-      choices.greenEnergy,
-      choices.smartCities,
-      choices.education
-    ];
-
-    // Map specific choice combinations to themed images
-    if (choices.aerospace === 'deep-space' || choices.aerospace === 'commercial-space') {
-      return "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1200&h=800&fit=crop"; // Space/futuristic
+    // Select India-specific images based on dominant technology choices
+    
+    // Space/Aerospace focus - ISRO/Indian space imagery
+    if (choices.aerospace === 'deep-space' || choices.aerospace === 'commercial-space' || choices.aerospace === 'satellite-network') {
+      return "https://images.unsplash.com/photo-1581822261290-991b38693d1b?w=1200&h=800&fit=crop"; // Indian tech/innovation
     }
-    if (choices.greenEnergy === 'solar-power' || choices.greenEnergy === 'wind-hydro') {
-      return "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&h=800&fit=crop"; // Clean energy/nature
+    
+    // Green Energy focus - Indian renewable energy
+    if (choices.greenEnergy === 'solar-power' || choices.greenEnergy === 'wind-hydro' || choices.greenEnergy === 'nuclear-fusion') {
+      return "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop"; // India Gate with modern touch
     }
-    if (choices.smartCities === 'vertical-cities' || choices.smartCities === 'iot-cities') {
-      return "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=800&fit=crop"; // Modern architecture
+    
+    // Smart Cities focus - Modern Indian cities
+    if (choices.smartCities === 'vertical-cities' || choices.smartCities === 'iot-cities' || choices.smartCities === 'public-transport') {
+      return "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&h=800&fit=crop"; // Mumbai skyline
     }
-    if (choices.aiRobotics === 'industrial-ai' || choices.aiRobotics === 'ai-research') {
-      return "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop"; // Tech/AI
+    
+    // AI/Robotics focus - Indian tech hubs
+    if (choices.aiRobotics === 'industrial-ai' || choices.aiRobotics === 'ai-research' || choices.aiRobotics === 'consumer-ai') {
+      return "https://images.unsplash.com/photo-1609920658906-8223bd289001?w=1200&h=800&fit=crop"; // Bangalore tech
     }
-    if (choices.medicalTech === 'ai-diagnostics' || choices.medicalTech === 'genetic-medicine') {
-      return "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=800&fit=crop"; // Medical/healthcare
+    
+    // Medical/Biotech focus - Indian healthcare
+    if (choices.medicalTech === 'ai-diagnostics' || choices.medicalTech === 'genetic-medicine' || choices.biotechnology !== 'no_choice') {
+      return "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&h=800&fit=crop"; // Indian architecture modern
+    }
+    
+    // Education focus - Indian educational institutions
+    if (choices.education === 'gamified-learning' || choices.education === 'ai-tutors' || choices.education === 'skill-academies') {
+      return "https://images.unsplash.com/photo-1631209138047-05afebb44b4a?w=1200&h=800&fit=crop"; // Indian modern buildings
     }
     
     // Default futuristic India cityscape
