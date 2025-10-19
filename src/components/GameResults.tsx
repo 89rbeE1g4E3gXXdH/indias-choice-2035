@@ -73,18 +73,27 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         body: { choices }
       });
 
-      // Check for payment/credits error first
-      if (data?.errorType === "payment_required" || data?.error?.includes("credits")) {
-        toast({
-          title: "Not Enough AI Credits",
-          description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
-          variant: "destructive"
-        });
-        setImageUrl(getFallbackImage());
-        return;
+      // Check for payment/credits error - error object contains the response for non-200 status
+      if (error) {
+        // Try to parse the error context which contains the response body
+        const errorData = typeof error === 'object' && 'context' in error 
+          ? (error as any).context 
+          : null;
+        
+        // Check if it's a payment required error (402)
+        if (errorData?.errorType === "payment_required" || 
+            error.message?.includes("credits") ||
+            error.message?.includes("payment_required")) {
+          toast({
+            title: "Not Enough AI Credits",
+            description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
+            variant: "destructive"
+          });
+          setImageUrl(getFallbackImage());
+          return;
+        }
+        throw error;
       }
-
-      if (error) throw error;
       
       if (data?.imageUrl) {
         setImageUrl(data.imageUrl);
