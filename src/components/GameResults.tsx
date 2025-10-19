@@ -28,6 +28,40 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     generateVisionImage();
   }, []);
 
+  const getFallbackImage = () => {
+    // Select image based on dominant technology choices
+    const techChoices = [
+      choices.medicalTech,
+      choices.aerospace,
+      choices.aiRobotics,
+      choices.quantumComputing,
+      choices.biotechnology,
+      choices.greenEnergy,
+      choices.smartCities,
+      choices.education
+    ];
+
+    // Map specific choice combinations to themed images
+    if (choices.aerospace === 'deep-space' || choices.aerospace === 'commercial-space') {
+      return "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1200&h=800&fit=crop"; // Space/futuristic
+    }
+    if (choices.greenEnergy === 'solar-power' || choices.greenEnergy === 'wind-hydro') {
+      return "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&h=800&fit=crop"; // Clean energy/nature
+    }
+    if (choices.smartCities === 'vertical-cities' || choices.smartCities === 'iot-cities') {
+      return "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=800&fit=crop"; // Modern architecture
+    }
+    if (choices.aiRobotics === 'industrial-ai' || choices.aiRobotics === 'ai-research') {
+      return "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop"; // Tech/AI
+    }
+    if (choices.medicalTech === 'ai-diagnostics' || choices.medicalTech === 'genetic-medicine') {
+      return "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=800&fit=crop"; // Medical/healthcare
+    }
+    
+    // Default futuristic India cityscape
+    return "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop";
+  };
+
   const generateVisionImage = async () => {
     setIsLoading(true);
     
@@ -43,7 +77,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
           variant: "destructive"
         });
-        setImageUrl("https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop");
+        setImageUrl(getFallbackImage());
         return;
       }
 
@@ -62,7 +96,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         description: "Using a default vision instead.",
         variant: "destructive"
       });
-      setImageUrl("https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop");
+      setImageUrl(getFallbackImage());
     } finally {
       setIsLoading(false);
     }
