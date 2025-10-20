@@ -29,39 +29,60 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   }, []);
 
   const getFallbackImage = () => {
-    // Select India-specific images based on dominant technology choices
-    
-    // Space/Aerospace focus - ISRO/Indian space imagery
-    if (choices.aerospace === 'deep-space' || choices.aerospace === 'commercial-space' || choices.aerospace === 'satellite-network') {
-      return "https://images.unsplash.com/photo-1581822261290-991b38693d1b?w=1200&h=800&fit=crop"; // Indian tech/innovation
+    // Calculate dominant themes based on choices
+    const themes = {
+      space: ['deep-space', 'commercial-space', 'satellite-network'].includes(choices.aerospace),
+      green: ['solar-power', 'wind-hydro', 'nuclear-fusion'].includes(choices.greenEnergy),
+      smart: ['vertical-cities', 'iot-cities', 'public-transport'].includes(choices.smartCities),
+      tech: ['industrial-ai', 'ai-research', 'consumer-ai'].includes(choices.aiRobotics),
+      health: ['ai-diagnostics', 'genetic-medicine', 'telemedicine'].includes(choices.medicalTech) || 
+              ['agri-biotech', 'vaccine-dev', 'bio-materials'].includes(choices.biotechnology),
+      education: ['gamified-learning', 'ai-tutors', 'skill-academies'].includes(choices.education)
+    };
+
+    // Specific outcome-based image selection
+    if (choices.aerospace === 'deep-space') {
+      return "https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=1200&h=800&fit=crop"; // Space exploration
     }
     
-    // Green Energy focus - Indian renewable energy
-    if (choices.greenEnergy === 'solar-power' || choices.greenEnergy === 'wind-hydro' || choices.greenEnergy === 'nuclear-fusion') {
-      return "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop"; // India Gate with modern touch
+    if (choices.aerospace === 'satellite-network') {
+      return "https://images.unsplash.com/photo-1581822261290-991b38693d1b?w=1200&h=800&fit=crop"; // Satellite tech
     }
     
-    // Smart Cities focus - Modern Indian cities
-    if (choices.smartCities === 'vertical-cities' || choices.smartCities === 'iot-cities' || choices.smartCities === 'public-transport') {
-      return "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&h=800&fit=crop"; // Mumbai skyline
+    if (choices.greenEnergy === 'solar-power') {
+      return "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&h=800&fit=crop"; // Solar panels India
     }
     
-    // AI/Robotics focus - Indian tech hubs
-    if (choices.aiRobotics === 'industrial-ai' || choices.aiRobotics === 'ai-research' || choices.aiRobotics === 'consumer-ai') {
-      return "https://images.unsplash.com/photo-1609920658906-8223bd289001?w=1200&h=800&fit=crop"; // Bangalore tech
+    if (choices.greenEnergy === 'nuclear-fusion') {
+      return "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&h=800&fit=crop"; // Futuristic energy
     }
     
-    // Medical/Biotech focus - Indian healthcare
-    if (choices.medicalTech === 'ai-diagnostics' || choices.medicalTech === 'genetic-medicine' || choices.biotechnology !== 'no_choice') {
-      return "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&h=800&fit=crop"; // Indian architecture modern
+    if (choices.smartCities === 'vertical-cities') {
+      return "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&h=800&fit=crop"; // Modern architecture
     }
     
-    // Education focus - Indian educational institutions
-    if (choices.education === 'gamified-learning' || choices.education === 'ai-tutors' || choices.education === 'skill-academies') {
-      return "https://images.unsplash.com/photo-1631209138047-05afebb44b4a?w=1200&h=800&fit=crop"; // Indian modern buildings
+    if (choices.smartCities === 'iot-cities') {
+      return "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&h=800&fit=crop"; // Smart city Mumbai
     }
     
-    // Default futuristic India cityscape
+    if (choices.aiRobotics === 'ai-research') {
+      return "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&h=800&fit=crop"; // AI technology
+    }
+    
+    if (choices.medicalTech === 'ai-diagnostics' || choices.medicalTech === 'genetic-medicine') {
+      return "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=800&fit=crop"; // Medical technology
+    }
+    
+    // Combined themes
+    if (themes.space && themes.tech) {
+      return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=800&fit=crop"; // Tech + space
+    }
+    
+    if (themes.green && themes.smart) {
+      return "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=800&fit=crop"; // Green smart city
+    }
+    
+    // Default: Futuristic India
     return "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop";
   };
 
