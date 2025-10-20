@@ -96,15 +96,39 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
 
       // Check for payment/credits error - error object contains the response for non-200 status
       if (error) {
-        // Try to parse the error context which contains the response body
-        const errorData = typeof error === 'object' && 'context' in error 
-          ? (error as any).context 
-          : null;
+        console.log("Edge function error:", error);
         
-        // Check if it's a payment required error (402)
-        if (errorData?.errorType === "payment_required" || 
-            error.message?.includes("credits") ||
-            error.message?.includes("payment_required")) {
+        // Parse error - check multiple possible locations for error data
+        let isPaymentError = false;
+        const errorMessage = error.message || '';
+        
+        // Check if error message contains payment/credits keywords
+        if (errorMessage.toLowerCase().includes("credits") || 
+            errorMessage.toLowerCase().includes("payment_required") ||
+            errorMessage.toLowerCase().includes("402")) {
+          isPaymentError = true;
+        }
+        
+        // Try to extract JSON from error message if present
+        try {
+          const jsonMatch = errorMessage.match(/\{.*\}/);
+          if (jsonMatch) {
+            const errorData = JSON.parse(jsonMatch[0]);
+            if (errorData.type === "payment_required" || errorData.errorType === "payment_required") {
+              isPaymentError = true;
+            }
+          }
+        } catch (e) {
+          // Not JSON or couldn't parse, continue with other checks
+        }
+        
+        // Check context property
+        if (error.context?.errorType === "payment_required" || 
+            error.context?.type === "payment_required") {
+          isPaymentError = true;
+        }
+        
+        if (isPaymentError) {
           toast({
             title: "Not Enough AI Credits",
             description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
@@ -113,6 +137,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           setImageUrl(getFallbackImage());
           return;
         }
+        
         throw error;
       }
       
