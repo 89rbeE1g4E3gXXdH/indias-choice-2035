@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Credits } from "@/components/Credits";
 
@@ -20,145 +17,11 @@ interface GameResultsProps {
 }
 
 export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  
+  // Use a static futuristic India image
+  const imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop";
 
-  useEffect(() => {
-    generateVisionImage();
-  }, []);
-
-  const getFallbackImage = () => {
-    // Calculate dominant themes based on choices
-    const themes = {
-      space: ['deep-space', 'commercial-space', 'satellite-network'].includes(choices.aerospace),
-      green: ['solar-power', 'wind-hydro', 'nuclear-fusion'].includes(choices.greenEnergy),
-      smart: ['vertical-cities', 'iot-cities', 'public-transport'].includes(choices.smartCities),
-      tech: ['industrial-ai', 'ai-research', 'consumer-ai'].includes(choices.aiRobotics),
-      health: ['ai-diagnostics', 'genetic-medicine', 'telemedicine'].includes(choices.medicalTech) || 
-              ['agri-biotech', 'vaccine-dev', 'bio-materials'].includes(choices.biotechnology),
-      education: ['gamified-learning', 'ai-tutors', 'skill-academies'].includes(choices.education)
-    };
-
-    // Specific outcome-based image selection
-    if (choices.aerospace === 'deep-space') {
-      return "https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=1200&h=800&fit=crop"; // Space exploration
-    }
-    
-    if (choices.aerospace === 'satellite-network') {
-      return "https://images.unsplash.com/photo-1581822261290-991b38693d1b?w=1200&h=800&fit=crop"; // Satellite tech
-    }
-    
-    if (choices.greenEnergy === 'solar-power') {
-      return "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&h=800&fit=crop"; // Solar panels India
-    }
-    
-    if (choices.greenEnergy === 'nuclear-fusion') {
-      return "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&h=800&fit=crop"; // Futuristic energy
-    }
-    
-    if (choices.smartCities === 'vertical-cities') {
-      return "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&h=800&fit=crop"; // Modern architecture
-    }
-    
-    if (choices.smartCities === 'iot-cities') {
-      return "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&h=800&fit=crop"; // Smart city Mumbai
-    }
-    
-    if (choices.aiRobotics === 'ai-research') {
-      return "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&h=800&fit=crop"; // AI technology
-    }
-    
-    if (choices.medicalTech === 'ai-diagnostics' || choices.medicalTech === 'genetic-medicine') {
-      return "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=800&fit=crop"; // Medical technology
-    }
-    
-    // Combined themes
-    if (themes.space && themes.tech) {
-      return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=800&fit=crop"; // Tech + space
-    }
-    
-    if (themes.green && themes.smart) {
-      return "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=800&fit=crop"; // Green smart city
-    }
-    
-    // Default: Futuristic India
-    return "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop";
-  };
-
-  const generateVisionImage = async () => {
-    setIsLoading(true);
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-india-vision', {
-        body: { choices }
-      });
-
-      // Check for payment/credits error - error object contains the response for non-200 status
-      if (error) {
-        console.log("Edge function error:", error);
-        
-        // Parse error - check multiple possible locations for error data
-        let isPaymentError = false;
-        const errorMessage = error.message || '';
-        
-        // Check if error message contains payment/credits keywords
-        if (errorMessage.toLowerCase().includes("credits") || 
-            errorMessage.toLowerCase().includes("payment_required") ||
-            errorMessage.toLowerCase().includes("402")) {
-          isPaymentError = true;
-        }
-        
-        // Try to extract JSON from error message if present
-        try {
-          const jsonMatch = errorMessage.match(/\{.*\}/);
-          if (jsonMatch) {
-            const errorData = JSON.parse(jsonMatch[0]);
-            if (errorData.type === "payment_required" || errorData.errorType === "payment_required") {
-              isPaymentError = true;
-            }
-          }
-        } catch (e) {
-          // Not JSON or couldn't parse, continue with other checks
-        }
-        
-        // Check context property
-        if (error.context?.errorType === "payment_required" || 
-            error.context?.type === "payment_required") {
-          isPaymentError = true;
-        }
-        
-        if (isPaymentError) {
-          toast({
-            title: "Not Enough AI Credits",
-            description: "Please add credits to your Lovable workspace to generate images. Using default vision instead.",
-            variant: "destructive"
-          });
-          setImageUrl(getFallbackImage());
-          return;
-        }
-        
-        throw error;
-      }
-      
-      if (data?.imageUrl) {
-        setImageUrl(data.imageUrl);
-      } else {
-        throw new Error('No image generated');
-      }
-    } catch (error: any) {
-      console.error("Error generating image:", error);
-      
-      toast({
-        title: "Image generation failed",
-        description: "Using a default vision instead.",
-        variant: "destructive"
-      });
-      setImageUrl(getFallbackImage());
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const getOutcomes = () => {
     const outcomes = {
@@ -296,21 +159,14 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           </p>
         </div>
 
-        {isLoading ? (
-          <div className="bg-card border border-border rounded-2xl p-12 text-center shadow-card mb-8">
-            <Loader2 className="w-16 h-16 animate-spin mx-auto mb-4 text-primary" />
-            <p className="text-xl text-muted-foreground">🎨 Generating your vision of India...</p>
-            <p className="text-sm text-muted-foreground mt-2">Analyzing your choices and rendering the future...</p>
-          </div>
-        ) : (
-          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-card mb-8 animate-scale-in">
-            {imageUrl && (
-              <img 
-                src={imageUrl} 
-                alt="India 2035 Vision" 
-                className="w-full h-96 object-cover"
-              />
-            )}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-card mb-8 animate-scale-in">
+          {imageUrl && (
+            <img 
+              src={imageUrl} 
+              alt="India 2035 Vision" 
+              className="w-full h-96 object-cover"
+            />
+          )}
             
             <div className="p-8">
               <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - Technology Revolution Results:</h2>
@@ -382,7 +238,6 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
               </div>
             </div>
           </div>
-        )}
 
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
