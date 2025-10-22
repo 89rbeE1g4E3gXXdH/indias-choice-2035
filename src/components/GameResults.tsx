@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Credits } from "@/components/Credits";
+import { useMemo } from "react";
 
 interface GameResultsProps {
   choices: {
@@ -19,8 +20,19 @@ interface GameResultsProps {
 export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const { toast } = useToast();
   
-  // Use a static futuristic India image
-  const imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop";
+  // Array of futuristic India images
+  const futuristicIndiaImages = [
+    "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop", // Mumbai skyline
+    "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop", // Modern India architecture
+    "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&h=800&fit=crop", // Tech city
+    "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=1200&h=800&fit=crop", // India Gate at night
+    "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&h=800&fit=crop"  // Bangalore tech hub
+  ];
+  
+  // Randomly select one image
+  const imageUrl = useMemo(() => {
+    return futuristicIndiaImages[Math.floor(Math.random() * futuristicIndiaImages.length)];
+  }, []);
 
 
   const getOutcomes = () => {
