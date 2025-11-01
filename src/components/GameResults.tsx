@@ -276,6 +276,14 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           >
             📤 Share Your Vision
           </Button>
+          
+          <Button
+            size="lg"
+            className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-intense transition-all duration-300 hover:scale-105"
+            onClick={() => window.open('https://indias-certify.lovable.app/?utm_source=lovable-editor', '_blank')}
+          >
+            🏆 Claim Your Certificate
+          </Button>
         </div>
 
         {/* Credits section */}
