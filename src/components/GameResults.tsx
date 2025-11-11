@@ -2,6 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Credits } from "@/components/Credits";
 import { useMemo } from "react";
+import indiaFuture1 from "@/assets/india-future-1.png";
+import indiaFuture2 from "@/assets/india-future-2.png";
+import indiaFuture3 from "@/assets/india-future-3.png";
+import indiaFuture4 from "@/assets/india-future-4.png";
 
 interface GameResultsProps {
   choices: {
@@ -22,11 +26,10 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   
   // Array of futuristic India images
   const futuristicIndiaImages = [
-    "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&h=800&fit=crop", // Mumbai skyline
-    "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=800&fit=crop", // Modern India architecture
-    "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&h=800&fit=crop", // Tech city
-    "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=1200&h=800&fit=crop", // India Gate at night
-    "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&h=800&fit=crop"  // Bangalore tech hub
+    indiaFuture1,
+    indiaFuture2,
+    indiaFuture3,
+    indiaFuture4
   ];
   
   // Randomly select one image
