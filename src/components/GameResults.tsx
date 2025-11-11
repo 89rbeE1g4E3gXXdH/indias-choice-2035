@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Credits } from "@/components/Credits";
+import { Progress } from "@/components/ui/progress";
 import { useMemo } from "react";
 import indiaFuture1 from "@/assets/india-future-1.png";
 import indiaFuture2 from "@/assets/india-future-2.png";
@@ -37,6 +38,35 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     return futuristicIndiaImages[Math.floor(Math.random() * futuristicIndiaImages.length)];
   }, []);
 
+  // Calculate leadership score
+  const calculateLeadershipScore = () => {
+    let score = 0;
+    const choiceValues = Object.values(choices);
+    
+    // Each valid choice gives points, no_choice gives 0
+    choiceValues.forEach((choice) => {
+      if (choice && choice !== 'no_choice') {
+        score += 12.5; // 8 categories × 12.5 = 100 max score
+      }
+    });
+    
+    return score;
+  };
+
+  const leadershipScore = calculateLeadershipScore();
+  
+  const getLeadershipRating = (score: number) => {
+    if (score === 100) return { title: "Visionary Leader", emoji: "🌟", color: "text-yellow-500", description: "Perfect decisions! India thrives under your visionary leadership." };
+    if (score >= 87.5) return { title: "Exceptional Leader", emoji: "⭐", color: "text-blue-500", description: "Outstanding choices that transformed India into a global powerhouse." };
+    if (score >= 75) return { title: "Strong Leader", emoji: "💪", color: "text-green-500", description: "Solid decisions that propelled India toward greatness." };
+    if (score >= 62.5) return { title: "Good Leader", emoji: "👍", color: "text-emerald-500", description: "Good strategic thinking with positive impact on India's future." };
+    if (score >= 50) return { title: "Average Leader", emoji: "🤔", color: "text-orange-500", description: "Decent choices, but India could have achieved more." };
+    if (score >= 37.5) return { title: "Hesitant Leader", emoji: "😰", color: "text-amber-600", description: "Too much indecision held back India's potential." };
+    if (score >= 25) return { title: "Weak Leader", emoji: "😔", color: "text-red-500", description: "Limited vision resulted in missed opportunities." };
+    return { title: "Failed Leadership", emoji: "❌", color: "text-red-700", description: "Lack of decisions caused India to fall behind." };
+  };
+
+  const leadershipRating = getLeadershipRating(leadershipScore);
 
   const getOutcomes = () => {
     const outcomes = {
@@ -172,6 +202,30 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           <p className="text-xl text-muted-foreground">
             ✨ A nation shaped by your leadership
           </p>
+        </div>
+
+        {/* Leadership Meter */}
+        <div className="bg-card border border-border rounded-2xl p-8 mb-8 shadow-card animate-scale-in">
+          <div className="text-center mb-6">
+            <div className="text-6xl mb-3 animate-fade-in">{leadershipRating.emoji}</div>
+            <h2 className={`text-3xl font-bold mb-2 ${leadershipRating.color}`}>
+              {leadershipRating.title}
+            </h2>
+            <p className="text-muted-foreground text-lg">{leadershipRating.description}</p>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-muted-foreground">Leadership Score</span>
+              <span className={`font-bold text-xl ${leadershipRating.color}`}>{leadershipScore}%</span>
+            </div>
+            <Progress value={leadershipScore} className="h-4 animate-fade-in" />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Failed</span>
+              <span>Average</span>
+              <span>Visionary</span>
+            </div>
+          </div>
         </div>
 
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-card mb-8 animate-scale-in">
