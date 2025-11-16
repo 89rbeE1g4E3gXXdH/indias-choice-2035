@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Credits } from "@/components/Credits";
 import { Progress } from "@/components/ui/progress";
 import { useMemo } from "react";
+import { Confetti } from "@/components/Confetti";
 import indiaFuture1 from "@/assets/india-future-1.png";
 import indiaFuture2 from "@/assets/india-future-2.png";
 import indiaFuture3 from "@/assets/india-future-3.png";
@@ -250,10 +251,22 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
+      {/* Confetti effect */}
+      {leadershipScore >= 75 && <Confetti />}
+      
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        
+        {/* Floating celebration emojis */}
+        {leadershipScore >= 87.5 && (
+          <>
+            <div className="absolute top-20 left-20 text-4xl opacity-30 animate-float">🏆</div>
+            <div className="absolute top-40 right-40 text-4xl opacity-30 animate-float" style={{animationDelay: '1s'}}>👑</div>
+            <div className="absolute bottom-20 left-1/4 text-4xl opacity-30 animate-float" style={{animationDelay: '2s'}}>⭐</div>
+          </>
+        )}
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">

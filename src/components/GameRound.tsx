@@ -68,11 +68,28 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float" style={{animationDelay: '3s'}}></div>
+        
+        {/* Floating particles */}
+        <div className="absolute top-20 left-10 text-2xl opacity-30 animate-float" style={{animationDelay: '0s'}}>✨</div>
+        <div className="absolute top-40 right-20 text-2xl opacity-30 animate-float" style={{animationDelay: '1s'}}>⚡</div>
+        <div className="absolute bottom-20 left-1/4 text-2xl opacity-30 animate-float" style={{animationDelay: '2s'}}>💫</div>
+        <div className="absolute top-60 right-1/3 text-2xl opacity-30 animate-float" style={{animationDelay: '1.5s'}}>🌟</div>
+        <div className="absolute bottom-40 right-10 text-2xl opacity-30 animate-float" style={{animationDelay: '2.5s'}}>✨</div>
+        
+        {/* Time pressure effect */}
+        {timeLeft <= 5 && (
+          <>
+            <div className="absolute inset-0 bg-destructive/5 animate-pulse"></div>
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-destructive to-transparent animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-destructive to-transparent animate-pulse"></div>
+          </>
+        )}
       </div>
 
       <div className="max-w-6xl w-full relative z-10">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2 text-primary">
+          <h2 className="text-3xl font-bold mb-2 text-primary animate-glow-pulse">
             🌟 ROUND {round.number}: {round.title}
           </h2>
           <p className="text-xl text-foreground mb-4">{round.question}</p>
@@ -85,6 +102,9 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
               </span>
             </div>
             <Progress value={progressValue} className="h-2" />
+            {timeLeft <= 5 && (
+              <p className="text-destructive text-sm mt-2 animate-bounce font-bold">⚠️ HURRY! Time is running out!</p>
+            )}
           </div>
         </div>
 
@@ -110,6 +130,12 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
               
               {/* Glow overlay on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-primary/5 transition-opacity duration-300 rounded-xl"></div>
+              
+              {/* Sparkle particles on hover */}
+              <div className="absolute -top-2 -left-2 text-xs opacity-0 group-hover:opacity-100 group-hover:animate-fly-debris-1 transition-opacity">✨</div>
+              <div className="absolute -top-2 -right-2 text-xs opacity-0 group-hover:opacity-100 group-hover:animate-fly-debris-2 transition-opacity">💫</div>
+              <div className="absolute -bottom-2 -left-2 text-xs opacity-0 group-hover:opacity-100 group-hover:animate-fly-debris-3 transition-opacity">⚡</div>
+              <div className="absolute -bottom-2 -right-2 text-xs opacity-0 group-hover:opacity-100 group-hover:animate-fly-debris-4 transition-opacity">🌟</div>
               
               <div className="text-5xl mb-4 transform group-hover:scale-125 transition-transform duration-300 filter group-hover:drop-shadow-[0_0_15px_rgba(255,138,0,0.8)]">{choice.icon}</div>
               <h3 className="text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors relative z-10 group-hover:drop-shadow-[0_0_10px_rgba(255,138,0,0.5)]">
