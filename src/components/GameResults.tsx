@@ -68,6 +68,26 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
 
   const leadershipRating = getLeadershipRating(leadershipScore);
 
+  const getCategoryBreakdown = () => {
+    const categories = [
+      { key: 'medicalTech', name: 'Medical Technology', icon: '🏥' },
+      { key: 'aerospace', name: 'Aerospace', icon: '🚀' },
+      { key: 'aiRobotics', name: 'AI & Robotics', icon: '🤖' },
+      { key: 'quantumComputing', name: 'Quantum Computing', icon: '⚛️' },
+      { key: 'biotechnology', name: 'Biotechnology', icon: '🧬' },
+      { key: 'greenEnergy', name: 'Green Energy', icon: '🌱' },
+      { key: 'smartCities', name: 'Smart Cities', icon: '🏙️' },
+      { key: 'education', name: 'Education', icon: '📚' },
+    ];
+
+    return categories.map(category => ({
+      ...category,
+      points: choices[category.key as keyof typeof choices] && choices[category.key as keyof typeof choices] !== 'no_choice' ? 12.5 : 0
+    }));
+  };
+
+  const categoryBreakdown = getCategoryBreakdown();
+
   const getOutcomes = () => {
     const outcomes = {
       'ai-diagnostics': {
@@ -224,6 +244,34 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
               <span>Failed</span>
               <span>Average</span>
               <span>Visionary</span>
+            </div>
+          </div>
+
+          {/* Category Breakdown */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <h3 className="text-lg font-semibold mb-4 text-foreground">Points Breakdown by Category</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {categoryBreakdown.map((category) => (
+                <div 
+                  key={category.key}
+                  className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{category.icon}</span>
+                    <span className="text-sm font-medium text-foreground">{category.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-bold ${category.points > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {category.points > 0 ? '+' : ''}{category.points}
+                    </span>
+                    {category.points > 0 ? (
+                      <span className="text-green-500">✓</span>
+                    ) : (
+                      <span className="text-muted-foreground">○</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
