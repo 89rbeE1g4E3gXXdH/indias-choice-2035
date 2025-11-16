@@ -2,8 +2,9 @@ import { useState } from "react";
 import { GameIntro } from "@/components/GameIntro";
 import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
+import { TntBlastTransition } from "@/components/TntBlastTransition";
 
-type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "results";
+type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results";
 
 interface Choices {
   medicalTech: string;
@@ -273,6 +274,10 @@ const Index = () => {
 
   const handleRound8Choice = (choice: string) => {
     setChoices(prev => ({ ...prev, education: choice }));
+    setStage("tnt-blast");
+  };
+
+  const handleTntBlastComplete = () => {
     setStage("results");
   };
 
@@ -301,6 +306,7 @@ const Index = () => {
       {stage === "round6" && <GameRound round={rounds[5]} onChoice={handleRound6Choice} />}
       {stage === "round7" && <GameRound round={rounds[6]} onChoice={handleRound7Choice} />}
       {stage === "round8" && <GameRound round={rounds[7]} onChoice={handleRound8Choice} />}
+      {stage === "tnt-blast" && <TntBlastTransition onComplete={handleTntBlastComplete} />}
       {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
     </>
   );
