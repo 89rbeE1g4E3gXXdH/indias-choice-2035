@@ -38,16 +38,58 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     return futuristicIndiaImages[Math.floor(Math.random() * futuristicIndiaImages.length)];
   }, []);
 
+  // Point values for each choice - varying strategic impact
+  const choicePoints: Record<string, number> = {
+    // Medical Technology
+    'ai-diagnostics': 12.5,
+    'genetic-medicine': 8,
+    'telemedicine': 3,
+    
+    // Aerospace
+    'satellite-network': 8,
+    'deep-space': 12.5,
+    'commercial-space': 3,
+    
+    // AI & Robotics
+    'industrial-ai': 12.5,
+    'consumer-ai': 3,
+    'ai-research': 8,
+    
+    // Quantum Computing
+    'quantum-security': 8,
+    'quantum-medicine': 12.5,
+    'quantum-internet': 3,
+    
+    // Biotechnology
+    'agri-biotech': 12.5,
+    'vaccine-dev': 8,
+    'bio-materials': 3,
+    
+    // Green Energy
+    'solar-power': 12.5,
+    'wind-hydro': 8,
+    'nuclear-fusion': 3,
+    
+    // Smart Cities
+    'public-transport': 8,
+    'vertical-cities': 3,
+    'iot-cities': 12.5,
+    
+    // Education
+    'gamified-learning': 3,
+    'ai-tutors': 12.5,
+    'skill-academies': 8,
+    
+    'no_choice': 0
+  };
+
   // Calculate leadership score
   const calculateLeadershipScore = () => {
     let score = 0;
     const choiceValues = Object.values(choices);
     
-    // Each valid choice gives points, no_choice gives 0
     choiceValues.forEach((choice) => {
-      if (choice && choice !== 'no_choice') {
-        score += 12.5; // 8 categories × 12.5 = 100 max score
-      }
+      score += choicePoints[choice] || 0;
     });
     
     return score;
@@ -82,7 +124,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
 
     return categories.map(category => ({
       ...category,
-      points: choices[category.key as keyof typeof choices] && choices[category.key as keyof typeof choices] !== 'no_choice' ? 12.5 : 0
+      points: choicePoints[choices[category.key as keyof typeof choices]] || 0
     }));
   };
 
