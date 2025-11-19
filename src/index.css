@@ -259,6 +259,17 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes particle-explode {
+    0% {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--particle-x), var(--particle-y)) scale(0) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
   .animate-walk-in {
     animation: walk-in 2s ease-out forwards;
   }

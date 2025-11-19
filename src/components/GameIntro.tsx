@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { MouseTracker } from "@/components/MouseTracker";
 import heroImage from "@/assets/india-hero.jpg";
 interface GameIntroProps {
   onStart: () => void;
@@ -7,6 +8,7 @@ export const GameIntro = ({
   onStart
 }: GameIntroProps) => {
   return <div className="min-h-screen flex items-center justify-center bg-gradient-hero animate-fade-in overflow-hidden relative">
+      <MouseTracker />
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float"></div>
