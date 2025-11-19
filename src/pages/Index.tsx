@@ -3,8 +3,9 @@ import { GameIntro } from "@/components/GameIntro";
 import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
 import { TntBlastTransition } from "@/components/TntBlastTransition";
+import { Leaderboard } from "@/components/Leaderboard";
 
-type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results";
+type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results" | "leaderboard";
 
 interface Choices {
   medicalTech: string;
@@ -295,6 +296,10 @@ const Index = () => {
     setStage("intro");
   };
 
+  const handleViewLeaderboard = () => {
+    setStage("leaderboard");
+  };
+
   return (
     <>
       {stage === "intro" && <GameIntro onStart={handleStart} />}
@@ -307,7 +312,8 @@ const Index = () => {
       {stage === "round7" && <GameRound round={rounds[6]} onChoice={handleRound7Choice} />}
       {stage === "round8" && <GameRound round={rounds[7]} onChoice={handleRound8Choice} />}
       {stage === "tnt-blast" && <TntBlastTransition onComplete={handleTntBlastComplete} />}
-      {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
+      {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} onViewLeaderboard={handleViewLeaderboard} />}
+      {stage === "leaderboard" && <Leaderboard onBack={handleReplay} />}
     </>
   );
 };
