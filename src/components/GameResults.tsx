@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Credits } from "@/components/Credits";
 import { Progress } from "@/components/ui/progress";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Confetti } from "@/components/Confetti";
+import { SaveScoreDialog } from "@/components/SaveScoreDialog";
+import { Trophy } from "lucide-react";
 import indiaFuture1 from "@/assets/india-future-1.png";
 import indiaFuture2 from "@/assets/india-future-2.png";
 import indiaFuture3 from "@/assets/india-future-3.png";
@@ -21,10 +23,12 @@ interface GameResultsProps {
     education: string;
   };
   onReplay: () => void;
+  onViewLeaderboard: () => void;
 }
 
-export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
+export const GameResults = ({ choices, onReplay, onViewLeaderboard }: GameResultsProps) => {
   const { toast } = useToast();
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
   
   // Array of futuristic India images
   const futuristicIndiaImages = [
@@ -412,6 +416,26 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           </div>
 
 
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+          <Button
+            onClick={() => setShowSaveDialog(true)}
+            size="lg"
+            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-intense transition-all duration-300 hover:scale-105"
+          >
+            <Trophy className="w-5 h-5 mr-2" />
+            Save to Leaderboard
+          </Button>
+          
+          <Button
+            onClick={onViewLeaderboard}
+            size="lg"
+            variant="outline"
+            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-glow"
+          >
+            🏆 View Leaderboard
+          </Button>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             onClick={onReplay}
@@ -451,6 +475,15 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           <Credits />
         </div>
       </div>
+
+      {/* Save Score Dialog */}
+      <SaveScoreDialog
+        open={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        score={leadershipScore}
+        choices={choices}
+        onSaved={onViewLeaderboard}
+      />
     </div>
   );
 };
