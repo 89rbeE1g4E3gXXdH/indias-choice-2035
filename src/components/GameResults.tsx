@@ -309,18 +309,18 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
               {categoryBreakdown.map((category) => (
                 <div 
                   key={category.key}
-                  className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50"
+                  className="group flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{category.icon}</span>
-                    <span className="text-sm font-medium text-foreground">{category.name}</span>
+                    <span className="text-xl group-hover:scale-125 transition-transform duration-300">{category.icon}</span>
+                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{category.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-bold ${category.points > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
+                    <span className={`text-sm font-bold transition-all duration-300 ${category.points > 0 ? 'text-primary group-hover:text-primary-glow' : 'text-muted-foreground'}`}>
                       {category.points > 0 ? '+' : ''}{category.points}
                     </span>
                     {category.points > 0 ? (
-                      <span className="text-green-500">✓</span>
+                      <span className="text-green-500 group-hover:scale-125 transition-transform duration-300">✓</span>
                     ) : (
                       <span className="text-muted-foreground">○</span>
                     )}
@@ -344,66 +344,66 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
               <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - Technology Revolution Results:</h2>
               
               <div className="space-y-4">
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🏥</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.medicalTech.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">🏥</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.medicalTech.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.medicalTech.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🚀</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.aerospace.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">🚀</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.aerospace.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.aerospace.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🤖</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.aiRobotics.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">🤖</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.aiRobotics.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.aiRobotics.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">⚛️</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.quantumComputing.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">⚛️</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.quantumComputing.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.quantumComputing.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🧬</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.biotechnology.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">🧬</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.biotechnology.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.biotechnology.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🌱</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.greenEnergy.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">🌱</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.greenEnergy.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.greenEnergy.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">🏙️</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.smartCities.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">🏙️</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.smartCities.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.smartCities.description}</p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+                <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-start gap-3 mb-2">
-                    <span className="text-2xl">📚</span>
-                    <h3 className="font-bold text-lg text-foreground">{outcomes.education.title}</h3>
+                    <span className="text-2xl group-hover:scale-125 transition-transform duration-300">📚</span>
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{outcomes.education.title}</h3>
                   </div>
                   <p className="text-muted-foreground ml-9">{outcomes.education.description}</p>
                 </div>

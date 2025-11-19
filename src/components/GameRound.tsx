@@ -27,11 +27,13 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
   const [timeLeft, setTimeLeft] = useState(15);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [explosion, setExplosion] = useState<{ x: number; y: number } | null>(null);
+  const [shake, setShake] = useState(false);
 
   useEffect(() => {
     setTimeLeft(15);
     setSelectedChoice(null);
     setExplosion(null);
+    setShake(false);
   }, [round]);
 
   useEffect(() => {
@@ -57,13 +59,17 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
       y: rect.top + rect.height / 2,
     });
     
+    // Screen shake effect
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
+    
     setTimeout(() => onChoice(choice), 500);
   };
 
   const progressValue = (timeLeft / 15) * 100;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
+    <div className={`min-h-screen flex items-center justify-center bg-gradient-hero p-6 animate-fade-in relative overflow-hidden ${shake ? 'animate-screen-shake' : ''}`}>
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float"></div>
