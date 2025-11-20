@@ -112,7 +112,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         pace: "Strategic & Calculated",
         emoji: "🎯",
         color: "text-primary",
-        message: "You're a master planner! Your choices show incredible foresight. You don't just react to challenges—you anticipate them three moves ahead. While others chase quick wins, you're building legacies. India's future needs more strategic thinkers like you!",
+        message: "You have a natural gift for strategic thinking. Your choices reflect a deep understanding of long-term planning and sustainable impact. You see beyond immediate results and focus on building foundations that will last. This visionary approach is exactly what transforms nations and creates lasting change.",
         trait: "You prioritize long-term impact over short-term gains"
       };
     }
@@ -124,7 +124,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         pace: "Bold & Dynamic",
         emoji: "⚡",
         color: "text-accent",
-        message: "You're a dynamo! You're not afraid to take bold leaps while keeping some safety nets. Your leadership style is energizing—you move fast, decide quickly, and aren't paralyzed by perfection. India needs leaders who can pivot and adapt at lightning speed, just like you!",
+        message: "Your leadership style shows a wonderful balance between boldness and pragmatism. You're not afraid to take calculated risks while maintaining some stability. This dynamic approach allows for rapid innovation while ensuring you don't lose sight of practical realities. Your adaptability is a true strength.",
         trait: "You balance ambitious risks with pragmatic choices"
       };
     }
@@ -136,7 +136,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         pace: "Cautious & Careful",
         emoji: "🛡️",
         color: "text-muted-foreground",
-        message: "You play it safe, and there's wisdom in that! You prefer proven paths over risky experiments. In uncertain times, your stability-first approach prevents disasters. However, remember—sometimes the greatest achievements require stepping outside the comfort zone. India's transformation needs a blend of safety and courage!",
+        message: "Your thoughtful and careful approach demonstrates wisdom in valuing stability. You prefer tested methods and gradual progress, which can be very valuable in preventing unnecessary risks. As you continue growing as a leader, consider that some of history's greatest achievements came from stepping into the unknown with courage.",
         trait: "You prioritize stability and proven solutions"
       };
     }
@@ -144,22 +144,22 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     // Slow-paced: Cautious, balanced approach with medium choices
     if (mediumValueChoices >= 4) {
       return {
-        style: "Slow-Paced Leader",
-        pace: "Thoughtful & Deliberate",
+        style: "Thoughtful Leader",
+        pace: "Reflective & Deliberate",
         emoji: "🧘",
         color: "text-secondary-foreground",
-        message: "You're a careful evaluator! You take your time, weigh every option, and prefer the middle path. Your thoughtful approach prevents hasty mistakes, but sometimes opportunities pass by while you deliberate. India's future needs decisive action—trust your instincts more and embrace calculated risks!",
+        message: "You take time to carefully consider your options and seek balanced solutions. This reflective approach helps you avoid impulsive mistakes and make well-reasoned decisions. Your analytical nature is an asset. As you develop further, you might find that trusting your instincts more quickly can open new opportunities.",
         trait: "You carefully analyze before committing to decisions"
       };
     }
     
     // Default: Mixed approach
     return {
-      style: "Balanced Leader",
-      pace: "Adaptable & Versatile",
+      style: "Adaptive Leader",
+      pace: "Flexible & Versatile",
       emoji: "⚖️",
       color: "text-foreground",
-      message: "You're a balanced decision-maker! You don't follow a single pattern—you adapt your approach based on the situation. This flexibility is valuable, but developing a stronger strategic vision could amplify your impact. India needs leaders who can be both flexible and focused!",
+      message: "Your leadership shows a flexible and adaptable approach to different challenges. You don't lock yourself into one pattern, which allows you to respond to various situations effectively. This versatility is valuable. With time and experience, developing a clearer strategic vision will help you channel this adaptability into even greater impact.",
       trait: "You adapt your style to match different challenges"
     };
   };
@@ -167,13 +167,13 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const leadershipStyle = getLeadershipStyle();
   
   const getLeadershipRating = (score: number) => {
-    if (score === 100) return { title: "Visionary Leader", emoji: "🌟", color: "text-yellow-500", description: "Perfect decisions! India thrives under your visionary leadership." };
-    if (score >= 87.5) return { title: "Exceptional Leader", emoji: "⭐", color: "text-blue-500", description: "Outstanding choices that transformed India into a global powerhouse." };
-    if (score >= 75) return { title: "Strong Leader", emoji: "💪", color: "text-green-500", description: "Solid decisions that propelled India toward greatness." };
-    if (score >= 62.5) return { title: "Good Leader", emoji: "👍", color: "text-emerald-500", description: "Good strategic thinking with positive impact on India's future." };
-    if (score >= 50) return { title: "Developing Leader", emoji: "🤔", color: "text-orange-500", description: "You're on the right track, but there's room to think bigger and bolder!" };
-    if (score >= 37.5) return { title: "Emerging Leader", emoji: "🌱", color: "text-amber-600", description: "You're learning! Every great leader started somewhere. Keep challenging yourself!" };
-    return { title: "Learning Leader", emoji: "📚", color: "text-red-500", description: "Leadership is a journey. Learn from these choices and come back stronger!" };
+    if (score === 100) return { title: "Visionary Leader", emoji: "🌟", color: "text-yellow-500", description: "Your decisions show exceptional foresight and understanding. India thrives under your visionary leadership." };
+    if (score >= 87.5) return { title: "Exceptional Leader", emoji: "⭐", color: "text-blue-500", description: "Your outstanding choices have transformed India into a global powerhouse with lasting impact." };
+    if (score >= 75) return { title: "Strong Leader", emoji: "💪", color: "text-green-500", description: "Your solid strategic decisions have propelled India toward greatness and prosperity." };
+    if (score >= 62.5) return { title: "Capable Leader", emoji: "👍", color: "text-emerald-500", description: "Your good strategic thinking has created positive impact on India's future development." };
+    if (score >= 50) return { title: "Developing Leader", emoji: "🌱", color: "text-orange-500", description: "You're building valuable leadership skills. There's exciting potential for even greater impact ahead." };
+    if (score >= 37.5) return { title: "Emerging Leader", emoji: "🌟", color: "text-amber-600", description: "You're on a learning journey. Every great leader started somewhere, and you're taking important steps forward." };
+    return { title: "Growing Leader", emoji: "🌱", color: "text-primary", description: "Leadership is a continuous journey of growth. Each experience helps you develop stronger decision-making skills." };
   };
 
   const leadershipRating = getLeadershipRating(leadershipScore);
@@ -415,7 +415,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           
           <div className="mt-4 pt-4 border-t border-border">
             <p className="text-center text-sm text-muted-foreground italic">
-              💡 {leadershipStyle.trait}
+              {leadershipStyle.trait}
             </p>
           </div>
         </div>
