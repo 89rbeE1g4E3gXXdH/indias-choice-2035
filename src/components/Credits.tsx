@@ -96,9 +96,7 @@ export const Credits = () => {
           <div className="text-2xl font-bold text-foreground mb-4 drop-shadow-[0_0_10px_rgba(255,138,0,0.5)]">
             🌟 THE ARCHITECTS OF TOMORROW 🌟
           </div>
-          <div className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Together, they shaped the future of India 2035
-          </div>
+          <div className="text-lg text-muted-foreground max-w-2xl mx-auto">Together, they shaped the future of India 2047</div>
           
           {/* Animated underline */}
           <div className="mt-6 h-0.5 w-48 mx-auto bg-gradient-to-r from-transparent via-primary to-transparent animate-shimmer bg-[length:200%_100%]"></div>

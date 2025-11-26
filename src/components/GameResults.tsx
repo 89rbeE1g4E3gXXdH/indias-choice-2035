@@ -372,9 +372,7 @@ export const GameResults = ({
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            🌅 INDIA 2035
-          </h1>
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">🌅 INDIA 2047</h1>
           <p className="text-xl text-muted-foreground">
             ✨ A nation shaped by your leadership
           </p>
@@ -449,7 +447,7 @@ export const GameResults = ({
           {imageUrl && <img src={imageUrl} alt="India 2035 Vision" className="w-full h-96 object-cover" />}
             
             <div className="p-8">
-              <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - Technology Revolution Results:</h2>
+              <h2 className="text-2xl font-bold mb-6 text-foreground">India 2047 - Technology Revolution Results:</h2>
               
               <div className="space-y-4">
                 <div className="group p-5 bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
