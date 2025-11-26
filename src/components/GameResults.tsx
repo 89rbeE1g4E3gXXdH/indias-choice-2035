@@ -7,7 +7,6 @@ import indiaFuture1 from "@/assets/india-future-1.png";
 import indiaFuture2 from "@/assets/india-future-2.png";
 import indiaFuture3 from "@/assets/india-future-3.png";
 import indiaFuture4 from "@/assets/india-future-4.png";
-
 interface GameResultsProps {
   choices: {
     medicalTech: string;
@@ -21,17 +20,13 @@ interface GameResultsProps {
   };
   onReplay: () => void;
 }
-
-export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
-  
+export const GameResults = ({
+  choices,
+  onReplay
+}: GameResultsProps) => {
   // Array of futuristic India images
-  const futuristicIndiaImages = [
-    indiaFuture1,
-    indiaFuture2,
-    indiaFuture3,
-    indiaFuture4
-  ];
-  
+  const futuristicIndiaImages = [indiaFuture1, indiaFuture2, indiaFuture3, indiaFuture4];
+
   // Randomly select one image
   const imageUrl = useMemo(() => {
     return futuristicIndiaImages[Math.floor(Math.random() * futuristicIndiaImages.length)];
@@ -43,42 +38,34 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
     'ai-diagnostics': 12.5,
     'genetic-medicine': 8,
     'telemedicine': 3,
-    
     // Aerospace
     'satellite-network': 8,
     'deep-space': 12.5,
     'commercial-space': 3,
-    
     // AI & Robotics
     'industrial-ai': 12.5,
     'consumer-ai': 3,
     'ai-research': 8,
-    
     // Quantum Computing
     'quantum-security': 8,
     'quantum-medicine': 12.5,
     'quantum-internet': 3,
-    
     // Biotechnology
     'agri-biotech': 12.5,
     'vaccine-dev': 8,
     'bio-materials': 3,
-    
     // Green Energy
     'solar-power': 12.5,
     'wind-hydro': 8,
     'nuclear-fusion': 3,
-    
     // Smart Cities
     'public-transport': 8,
     'vertical-cities': 3,
     'iot-cities': 12.5,
-    
     // Education
     'gamified-learning': 3,
     'ai-tutors': 12.5,
     'skill-academies': 8,
-    
     'no_choice': 0
   };
 
@@ -86,25 +73,21 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
   const calculateLeadershipScore = () => {
     let score = 0;
     const choiceValues = Object.values(choices);
-    
-    choiceValues.forEach((choice) => {
+    choiceValues.forEach(choice => {
       score += choicePoints[choice] || 0;
     });
-    
     return score;
   };
-
   const leadershipScore = calculateLeadershipScore();
-  
+
   // Determine leadership style based on choice patterns
   const getLeadershipStyle = () => {
     const choiceValues = Object.values(choices);
     const pointValues = choiceValues.map(choice => choicePoints[choice] || 0);
-    
     const highValueChoices = pointValues.filter(p => p === 12.5).length;
     const mediumValueChoices = pointValues.filter(p => p === 8).length;
     const lowValueChoices = pointValues.filter(p => p === 3).length;
-    
+
     // Strategic: Primarily high-value choices (5+ high-impact decisions)
     if (highValueChoices >= 5) {
       return {
@@ -116,7 +99,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         trait: "You prioritize long-term impact over short-term gains"
       };
     }
-    
+
     // Fast-paced: High risk tolerance, mix of high and varied choices
     if (highValueChoices >= 3 && lowValueChoices >= 2) {
       return {
@@ -128,7 +111,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         trait: "You balance ambitious risks with pragmatic choices"
       };
     }
-    
+
     // Safe: Predominantly low-value, risk-averse choices
     if (lowValueChoices >= 5) {
       return {
@@ -140,7 +123,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         trait: "You prioritize stability and proven solutions"
       };
     }
-    
+
     // Slow-paced: Cautious, balanced approach with medium choices
     if (mediumValueChoices >= 4) {
       return {
@@ -152,7 +135,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         trait: "You carefully analyze before committing to decisions"
       };
     }
-    
+
     // Default: Mixed approach
     return {
       style: "Adaptive Leader",
@@ -163,41 +146,92 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
       trait: "You adapt your style to match different challenges"
     };
   };
-  
   const leadershipStyle = getLeadershipStyle();
-  
   const getLeadershipRating = (score: number) => {
-    if (score === 100) return { title: "Visionary Leader", emoji: "🌟", color: "text-yellow-500", description: "Your decisions show exceptional foresight and understanding. India thrives under your visionary leadership." };
-    if (score >= 87.5) return { title: "Exceptional Leader", emoji: "⭐", color: "text-blue-500", description: "Your outstanding choices have transformed India into a global powerhouse with lasting impact." };
-    if (score >= 75) return { title: "Strong Leader", emoji: "💪", color: "text-green-500", description: "Your solid strategic decisions have propelled India toward greatness and prosperity." };
-    if (score >= 62.5) return { title: "Capable Leader", emoji: "👍", color: "text-emerald-500", description: "Your good strategic thinking has created positive impact on India's future development." };
-    if (score >= 50) return { title: "Developing Leader", emoji: "🌱", color: "text-orange-500", description: "You're building valuable leadership skills. There's exciting potential for even greater impact ahead." };
-    if (score >= 37.5) return { title: "Emerging Leader", emoji: "🌟", color: "text-amber-600", description: "You're on a learning journey. Every great leader started somewhere, and you're taking important steps forward." };
-    return { title: "Growing Leader", emoji: "🌱", color: "text-primary", description: "Leadership is a continuous journey of growth. Each experience helps you develop stronger decision-making skills." };
+    if (score === 100) return {
+      title: "Visionary Leader",
+      emoji: "🌟",
+      color: "text-yellow-500",
+      description: "Your decisions show exceptional foresight and understanding. India thrives under your visionary leadership."
+    };
+    if (score >= 87.5) return {
+      title: "Exceptional Leader",
+      emoji: "⭐",
+      color: "text-blue-500",
+      description: "Your outstanding choices have transformed India into a global powerhouse with lasting impact."
+    };
+    if (score >= 75) return {
+      title: "Strong Leader",
+      emoji: "💪",
+      color: "text-green-500",
+      description: "Your solid strategic decisions have propelled India toward greatness and prosperity."
+    };
+    if (score >= 62.5) return {
+      title: "Capable Leader",
+      emoji: "👍",
+      color: "text-emerald-500",
+      description: "Your good strategic thinking has created positive impact on India's future development."
+    };
+    if (score >= 50) return {
+      title: "Developing Leader",
+      emoji: "🌱",
+      color: "text-orange-500",
+      description: "You're building valuable leadership skills. There's exciting potential for even greater impact ahead."
+    };
+    if (score >= 37.5) return {
+      title: "Emerging Leader",
+      emoji: "🌟",
+      color: "text-amber-600",
+      description: "You're on a learning journey. Every great leader started somewhere, and you're taking important steps forward."
+    };
+    return {
+      title: "Growing Leader",
+      emoji: "🌱",
+      color: "text-primary",
+      description: "Leadership is a continuous journey of growth. Each experience helps you develop stronger decision-making skills."
+    };
   };
-
   const leadershipRating = getLeadershipRating(leadershipScore);
-
   const getCategoryBreakdown = () => {
-    const categories = [
-      { key: 'medicalTech', name: 'Medical Technology', icon: '🏥' },
-      { key: 'aerospace', name: 'Aerospace', icon: '🚀' },
-      { key: 'aiRobotics', name: 'AI & Robotics', icon: '🤖' },
-      { key: 'quantumComputing', name: 'Quantum Computing', icon: '⚛️' },
-      { key: 'biotechnology', name: 'Biotechnology', icon: '🧬' },
-      { key: 'greenEnergy', name: 'Green Energy', icon: '🌱' },
-      { key: 'smartCities', name: 'Smart Cities', icon: '🏙️' },
-      { key: 'education', name: 'Education', icon: '📚' },
-    ];
-
+    const categories = [{
+      key: 'medicalTech',
+      name: 'Medical Technology',
+      icon: '🏥'
+    }, {
+      key: 'aerospace',
+      name: 'Aerospace',
+      icon: '🚀'
+    }, {
+      key: 'aiRobotics',
+      name: 'AI & Robotics',
+      icon: '🤖'
+    }, {
+      key: 'quantumComputing',
+      name: 'Quantum Computing',
+      icon: '⚛️'
+    }, {
+      key: 'biotechnology',
+      name: 'Biotechnology',
+      icon: '🧬'
+    }, {
+      key: 'greenEnergy',
+      name: 'Green Energy',
+      icon: '🌱'
+    }, {
+      key: 'smartCities',
+      name: 'Smart Cities',
+      icon: '🏙️'
+    }, {
+      key: 'education',
+      name: 'Education',
+      icon: '📚'
+    }];
     return categories.map(category => ({
       ...category,
       points: choicePoints[choices[category.key as keyof typeof choices]] || 0
     }));
   };
-
   const categoryBreakdown = getCategoryBreakdown();
-
   const getOutcomes = () => {
     const outcomes = {
       'ai-diagnostics': {
@@ -301,7 +335,6 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         description: '⏰ Indecision led to moderate progress. India followed instead of leading technological revolution.'
       }
     };
-
     return {
       medicalTech: outcomes[choices.medicalTech as keyof typeof outcomes] || outcomes['no_choice'],
       aerospace: outcomes[choices.aerospace as keyof typeof outcomes] || outcomes['no_choice'],
@@ -310,30 +343,31 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
       biotechnology: outcomes[choices.biotechnology as keyof typeof outcomes] || outcomes['no_choice'],
       greenEnergy: outcomes[choices.greenEnergy as keyof typeof outcomes] || outcomes['no_choice'],
       smartCities: outcomes[choices.smartCities as keyof typeof outcomes] || outcomes['no_choice'],
-      education: outcomes[choices.education as keyof typeof outcomes] || outcomes['no_choice'],
+      education: outcomes[choices.education as keyof typeof outcomes] || outcomes['no_choice']
     };
   };
-
   const outcomes = getOutcomes();
-
-  return (
-    <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
       {/* Confetti effect */}
       {leadershipScore >= 75 && <Confetti />}
       
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{
+        animationDelay: '2s'
+      }}></div>
         
         {/* Floating celebration emojis */}
-        {leadershipScore >= 87.5 && (
-          <>
+        {leadershipScore >= 87.5 && <>
             <div className="absolute top-20 left-20 text-4xl opacity-30 animate-float">🏆</div>
-            <div className="absolute top-40 right-40 text-4xl opacity-30 animate-float" style={{animationDelay: '1s'}}>👑</div>
-            <div className="absolute bottom-20 left-1/4 text-4xl opacity-30 animate-float" style={{animationDelay: '2s'}}>⭐</div>
-          </>
-        )}
+            <div className="absolute top-40 right-40 text-4xl opacity-30 animate-float" style={{
+          animationDelay: '1s'
+        }}>👑</div>
+            <div className="absolute bottom-20 left-1/4 text-4xl opacity-30 animate-float" style={{
+          animationDelay: '2s'
+        }}>⭐</div>
+          </>}
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
@@ -349,11 +383,11 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         {/* Leadership Meter */}
         <div className="bg-card border border-border rounded-2xl p-8 mb-8 shadow-card animate-scale-in">
           <div className="text-center mb-6">
-            <div className="text-6xl mb-3 animate-fade-in">{leadershipRating.emoji}</div>
+            
             <h2 className={`text-3xl font-bold mb-2 ${leadershipRating.color}`}>
               {leadershipRating.title}
             </h2>
-            <p className="text-muted-foreground text-lg">{leadershipRating.description}</p>
+            
           </div>
           
           <div className="space-y-3">
@@ -373,11 +407,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           <div className="mt-6 pt-6 border-t border-border">
             <h3 className="text-lg font-semibold mb-4 text-foreground">Points Breakdown by Category</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {categoryBreakdown.map((category) => (
-                <div 
-                  key={category.key}
-                  className="group flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer"
-                >
+              {categoryBreakdown.map(category => <div key={category.key} className="group flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-glow cursor-pointer">
                   <div className="flex items-center gap-2">
                     <span className="text-xl group-hover:scale-125 transition-transform duration-300">{category.icon}</span>
                     <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{category.name}</span>
@@ -386,14 +416,9 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
                     <span className={`text-sm font-bold transition-all duration-300 ${category.points > 0 ? 'text-primary group-hover:text-primary-glow' : 'text-muted-foreground'}`}>
                       {category.points > 0 ? '+' : ''}{category.points}
                     </span>
-                    {category.points > 0 ? (
-                      <span className="text-green-500 group-hover:scale-125 transition-transform duration-300">✓</span>
-                    ) : (
-                      <span className="text-muted-foreground">○</span>
-                    )}
+                    {category.points > 0 ? <span className="text-green-500 group-hover:scale-125 transition-transform duration-300">✓</span> : <span className="text-muted-foreground">○</span>}
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -421,13 +446,7 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
         </div>
 
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-card mb-8 animate-scale-in">
-          {imageUrl && (
-            <img 
-              src={imageUrl} 
-              alt="India 2035 Vision" 
-              className="w-full h-96 object-cover"
-            />
-          )}
+          {imageUrl && <img src={imageUrl} alt="India 2035 Vision" className="w-full h-96 object-cover" />}
             
             <div className="p-8">
               <h2 className="text-2xl font-bold mb-6 text-foreground">India 2035 - Technology Revolution Results:</h2>
@@ -502,19 +521,11 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
 
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            onClick={onReplay}
-            size="lg"
-            className="bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-105 hover:shadow-[0_0_80px_rgba(255,138,0,0.7)]"
-          >
+          <Button onClick={onReplay} size="lg" className="bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-105 hover:shadow-[0_0_80px_rgba(255,138,0,0.7)]">
             🔁 Play Again
           </Button>
           
-          <Button
-            size="lg"
-            className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-intense transition-all duration-300 hover:scale-105"
-            onClick={() => window.open('https://indias-certify.lovable.app/?utm_source=lovable-editor', '_blank')}
-          >
+          <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-intense transition-all duration-300 hover:scale-105" onClick={() => window.open('https://indias-certify.lovable.app/?utm_source=lovable-editor', '_blank')}>
             🏆 Claim Your Certificate
           </Button>
         </div>
@@ -524,6 +535,5 @@ export const GameResults = ({ choices, onReplay }: GameResultsProps) => {
           <Credits />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
