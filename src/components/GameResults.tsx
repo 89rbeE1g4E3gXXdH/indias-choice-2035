@@ -382,9 +382,7 @@ export const GameResults = ({
         <div className="bg-card border border-border rounded-2xl p-8 mb-8 shadow-card animate-scale-in">
           <div className="text-center mb-6">
             
-            <h2 className={`text-3xl font-bold mb-2 ${leadershipRating.color}`}>
-              {leadershipRating.title}
-            </h2>
+            
             
           </div>
           
