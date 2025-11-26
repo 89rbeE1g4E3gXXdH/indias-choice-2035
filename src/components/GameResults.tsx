@@ -349,11 +349,11 @@ export const GameResults = ({
   const outcomes = getOutcomes();
   return <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
       {/* Confetti effect */}
-      {leadershipScore >= 75 && <Confetti />}
+      {leadershipScore >= 75}
       
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+        
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{
         animationDelay: '2s'
       }}></div>
