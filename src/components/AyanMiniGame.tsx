@@ -214,9 +214,7 @@ export const AyanMiniGame = ({
       </div>
 
       <div className="text-center mb-4 relative z-10">
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2 animate-glow-pulse">
-          Conquer Ayan
-        </h1>
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2 animate-glow-pulse">Conquer SOMEONE!</h1>
         <p className={`font-semibold mb-4 ${settings.color}`}>{settings.label} Mode</p>
         
         {/* Score display with effects */}
@@ -287,7 +285,7 @@ export const AyanMiniGame = ({
                 <p className="text-muted-foreground">Difficulty: <span className={settings.color}>{settings.label}</span></p>
               </> : <>
                 <div className="text-6xl mb-4">😢</div>
-                <h2 className="text-3xl font-bold text-destructive mb-2">Ayan Escaped</h2>
+                <h2 className="text-3xl font-bold text-destructive mb-2">SOMEONE! Escaped</h2>
                 <p className="text-muted-foreground mb-2">You only caught him {score} times</p>
                 <p className="text-sm text-muted-foreground">Maybe try an easier difficulty?</p>
               </>}
@@ -307,9 +305,9 @@ export const AyanMiniGame = ({
       </div>
 
       <div className="mt-8 text-sm text-muted-foreground max-w-md text-center bg-card/50 backdrop-blur-sm p-4 rounded-xl border border-border relative z-10">
-        <p className="font-semibold mb-2 text-foreground">How to Conquer Ayan:</p>
+        <p className="font-semibold mb-2 text-foreground">How to Conquer SOMEONE!:</p>
         <ul className="space-y-1">
-          <li>1. Click on Ayan before he moves away</li>
+          <li>1. Click on SOMEONE! before he moves away</li>
           <li>2. Catch him {settings.clicksNeeded} times to prove he is NOT the GOAT</li>
           <li>3. You have {settings.time} seconds - be quick</li>
           <li>4. Build combos for extra satisfaction</li>
