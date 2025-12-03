@@ -393,9 +393,12 @@ export const GameResults = ({
             </div>
             <Progress value={leadershipScore} className="h-4 animate-fade-in" />
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Failed</span>
-              <span>Average</span>
-              <span>Visionary</span>
+              <span>
+            </span>
+              <span>
+            </span>
+              <span>
+            </span>
             </div>
           </div>
 
