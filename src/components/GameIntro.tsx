@@ -48,9 +48,8 @@ export const GameIntro = ({
         </h1>
         <h2 className="text-5xl font-bold mb-6 text-primary drop-shadow-[0_0_30px_rgba(255,138,0,0.7)] animate-glow-pulse">INDIA 2047 🇮🇳</h2>
         
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          🧠 Your Decisions. Your Vision. Your Future India.
-        </p>
+        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">🧠 "Your Decisions. Your Vision. Your Future India."
+||Motto</p>
         
         <div className="bg-card border border-border rounded-xl p-6 mb-8 shadow-card">
           <h3 className="text-2xl font-bold mb-4 text-foreground">⚙️ GAME STRUCTURE</h3>
