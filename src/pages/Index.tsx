@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GameIntro } from "@/components/GameIntro";
 import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
 import { TntBlastTransition } from "@/components/TntBlastTransition";
 
-type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results";
+type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results" | "easter-egg";
 
 interface Choices {
   medicalTech: string;
@@ -232,6 +232,33 @@ const Index = () => {
     smartCities: "",
     education: ""
   });
+  const [keySequence, setKeySequence] = useState<string[]>([]);
+
+  // Easter egg: up up down down
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key;
+      if (key === "ArrowUp" || key === "ArrowDown") {
+        setKeySequence(prev => {
+          const newSequence = [...prev, key].slice(-4);
+          if (
+            newSequence.length === 4 &&
+            newSequence[0] === "ArrowUp" &&
+            newSequence[1] === "ArrowUp" &&
+            newSequence[2] === "ArrowDown" &&
+            newSequence[3] === "ArrowDown"
+          ) {
+            setStage("easter-egg");
+            return [];
+          }
+          return newSequence;
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleStart = () => {
     setStage("round1");
@@ -308,6 +335,19 @@ const Index = () => {
       {stage === "round8" && <GameRound round={rounds[7]} onChoice={handleRound8Choice} />}
       {stage === "tnt-blast" && <TntBlastTransition onComplete={handleTntBlastComplete} />}
       {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
+      {stage === "easter-egg" && (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero animate-fade-in">
+          <h1 className="text-6xl font-bold text-primary animate-pulse mb-8">
+            AYAN IS NOT THE GOATTTT
+          </h1>
+          <button
+            onClick={() => setStage("intro")}
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary-glow transition-all"
+          >
+            Go Back
+          </button>
+        </div>
+      )}
     </>
   );
 };
