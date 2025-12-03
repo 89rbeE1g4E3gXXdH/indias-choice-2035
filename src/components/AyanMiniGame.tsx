@@ -266,9 +266,7 @@ export const AyanMiniGame = ({
         transform: "translate(-50%, -50%)"
       }}>
             {/* Ayan with darker skin tone */}
-            <span className="text-6xl drop-shadow-lg group-hover:drop-shadow-[0_0_20px_rgba(255,138,0,0.8)] transition-all">
-              👦🏾
-            </span>
+            
             {/* Glow effect */}
             <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse -z-10" />
           </button>}
