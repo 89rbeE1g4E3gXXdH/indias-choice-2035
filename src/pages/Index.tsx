@@ -3,6 +3,7 @@ import { GameIntro } from "@/components/GameIntro";
 import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
 import { TntBlastTransition } from "@/components/TntBlastTransition";
+import { AyanMiniGame } from "@/components/AyanMiniGame";
 
 type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results" | "easter-egg";
 
@@ -336,17 +337,7 @@ const Index = () => {
       {stage === "tnt-blast" && <TntBlastTransition onComplete={handleTntBlastComplete} />}
       {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
       {stage === "easter-egg" && (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero animate-fade-in">
-          <h1 className="text-6xl font-bold text-primary animate-pulse mb-8">
-            AYAN IS NOT THE GOATTTT
-          </h1>
-          <button
-            onClick={() => setStage("intro")}
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary-glow transition-all"
-          >
-            Go Back
-          </button>
-        </div>
+        <AyanMiniGame onExit={() => setStage("intro")} />
       )}
     </>
   );
