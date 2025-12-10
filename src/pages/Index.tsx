@@ -4,6 +4,7 @@ import { GameRound } from "@/components/GameRound";
 import { GameResults } from "@/components/GameResults";
 import { TntBlastTransition } from "@/components/TntBlastTransition";
 import { AyanMiniGame } from "@/components/AyanMiniGame";
+import { ObbyGame } from "@/components/ObbyGame";
 type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results" | "easter-egg";
 interface Choices {
   medicalTech: string;
@@ -295,7 +296,7 @@ const Index = () => {
       {stage === "round8" && <GameRound round={rounds[7]} onChoice={handleRound8Choice} />}
       {stage === "tnt-blast" && <TntBlastTransition onComplete={handleTntBlastComplete} />}
       {stage === "results" && <GameResults choices={choices} onReplay={handleReplay} />}
-      {stage === "easter-egg"}
+      {stage === "easter-egg" && <ObbyGame onExit={() => setStage("intro")} />}
     </>;
 };
 export default Index;
