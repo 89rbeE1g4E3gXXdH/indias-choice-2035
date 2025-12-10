@@ -26,11 +26,52 @@ interface ObstacleProps {
   type: 'spinner' | 'pusher' | 'spikes';
 }
 
+// Helper to get platform collision data
+const getPlatformData = (level: number): { position: [number, number, number]; size: [number, number, number] }[] => {
+  const platforms: { position: [number, number, number]; size: [number, number, number] }[] = [];
+  
+  // Starting platform
+  platforms.push({ position: [0, 0, 0], size: [4, 0.5, 4] });
+
+  if (level === 1) {
+    platforms.push({ position: [0, 0, -6], size: [3, 0.5, 3] });
+    platforms.push({ position: [3, 0, -12], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -18], size: [3, 0.5, 3] });
+    platforms.push({ position: [-3, 0, -24], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -30], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -36], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -42], size: [5, 0.5, 5] });
+  } else if (level === 2) {
+    platforms.push({ position: [0, 0, -6], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 1, -14], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -22], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -30], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 0, -36], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 0, -42], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 2, -50], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -58], size: [5, 0.5, 5] });
+  } else {
+    platforms.push({ position: [0, 0, -6], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 1, -14], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [-4, 0, -22], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 0, -22], size: [2, 0.5, 2] });
+    platforms.push({ position: [4, 0, -22], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 0, -30], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 2, -38], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 4, -48], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 2, -58], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [0, 0, -68], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -78], size: [6, 0.5, 6] });
+  }
+  
+  return platforms;
+};
+
 // Player Ball Component
 const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: PlayerProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const velocity = useRef({ x: 0, y: 0, z: 0 });
-  const isGrounded = useRef(false);
+  const isGrounded = useRef(true);
   const keys = useRef({ w: false, a: false, s: false, d: false, space: false });
 
   useEffect(() => {
@@ -62,40 +103,69 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
   useFrame((_, delta) => {
     if (!meshRef.current || !gameActive) return;
 
-    const speed = 8;
-    const jumpForce = 12;
-    const gravity = -25;
+    const moveSpeed = 5;
+    const jumpForce = 8;
+    const gravity = 20;
+    const maxFallSpeed = 15;
+    const friction = 0.85;
 
-    // Movement
-    if (keys.current.w) velocity.current.z -= speed * delta;
-    if (keys.current.s) velocity.current.z += speed * delta;
-    if (keys.current.a) velocity.current.x -= speed * delta;
-    if (keys.current.d) velocity.current.x += speed * delta;
+    // Horizontal movement (direct velocity setting for snappy control)
+    if (keys.current.w) velocity.current.z = -moveSpeed;
+    else if (keys.current.s) velocity.current.z = moveSpeed;
+    else velocity.current.z *= friction;
 
-    // Jump
+    if (keys.current.a) velocity.current.x = -moveSpeed;
+    else if (keys.current.d) velocity.current.x = moveSpeed;
+    else velocity.current.x *= friction;
+
+    // Jump (only when grounded)
     if (keys.current.space && isGrounded.current) {
-      velocity.current.y = jumpForce * delta * 60;
+      velocity.current.y = jumpForce;
       isGrounded.current = false;
     }
 
-    // Gravity
-    velocity.current.y += gravity * delta;
+    // Apply gravity
+    if (!isGrounded.current) {
+      velocity.current.y -= gravity * delta;
+      velocity.current.y = Math.max(velocity.current.y, -maxFallSpeed);
+    }
 
-    // Apply velocity
-    const newX = position[0] + velocity.current.x;
+    // Calculate new position
+    const newX = position[0] + velocity.current.x * delta;
     const newY = position[1] + velocity.current.y * delta;
-    const newZ = position[2] + velocity.current.z;
+    const newZ = position[2] + velocity.current.z * delta;
 
-    // Friction
-    velocity.current.x *= 0.9;
-    velocity.current.z *= 0.9;
+    // Platform collision - check if player is above a platform
+    const playerRadius = 0.5;
+    const platforms = getPlatformData(level);
+    let groundY = -100; // Default to falling
+    
+    for (const platform of platforms) {
+      const [px, py, pz] = platform.position;
+      const [sx, sy, sz] = platform.size;
+      
+      // Check if player is within platform bounds (x and z)
+      if (
+        newX >= px - sx / 2 - playerRadius &&
+        newX <= px + sx / 2 + playerRadius &&
+        newZ >= pz - sz / 2 - playerRadius &&
+        newZ <= pz + sz / 2 + playerRadius
+      ) {
+        const platformTop = py + sy / 2;
+        // Check if player is above or landing on platform
+        if (position[1] >= platformTop && newY <= platformTop + playerRadius) {
+          groundY = Math.max(groundY, platformTop + playerRadius);
+        }
+      }
+    }
 
-    // Simple ground check (platforms)
-    if (newY <= 0.5) {
+    // Apply ground collision
+    if (newY <= groundY) {
       isGrounded.current = true;
       velocity.current.y = 0;
-      setPosition([newX, 0.5, newZ]);
+      setPosition([newX, groundY, newZ]);
     } else {
+      isGrounded.current = false;
       setPosition([newX, newY, newZ]);
     }
 
@@ -104,15 +174,16 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
       onFall();
     }
 
-    // Win detection (reach the end platform)
+    // Win detection
     const winZ = level === 1 ? -40 : level === 2 ? -60 : -80;
     if (newZ < winZ) {
       onWin();
     }
 
+    // Update mesh
     meshRef.current.position.set(position[0], position[1], position[2]);
-    meshRef.current.rotation.x += velocity.current.z * 0.5;
-    meshRef.current.rotation.z -= velocity.current.x * 0.5;
+    meshRef.current.rotation.x += velocity.current.z * delta * 2;
+    meshRef.current.rotation.z -= velocity.current.x * delta * 2;
   });
 
   return (
