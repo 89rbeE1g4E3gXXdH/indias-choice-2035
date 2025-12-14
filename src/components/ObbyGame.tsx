@@ -1,15 +1,33 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Text, Sky, Stars } from '@react-three/drei';
+import { Text, Sky, Stars } from '@react-three/drei';
 import * as THREE from 'three';
+
+// Power-up types
+type PowerUpType = 'speed' | 'jump' | 'shield' | 'magnet' | 'freeze';
+
+interface ActivePower {
+  type: PowerUpType;
+  timeLeft: number;
+}
+
+interface PowerUpData {
+  position: [number, number, number];
+  type: PowerUpType;
+  collected: boolean;
+}
 
 interface PlayerProps {
   position: [number, number, number];
   setPosition: (pos: [number, number, number]) => void;
   onFall: () => void;
   onWin: () => void;
+  onHit: () => void;
   gameActive: boolean;
   level: number;
+  activePowers: ActivePower[];
+  obstacles: ObstacleData[];
+  timeFrozen: boolean;
 }
 
 interface PlatformProps {
@@ -19,14 +37,39 @@ interface PlatformProps {
   moving?: { axis: 'x' | 'z'; range: number; speed: number };
   rotating?: boolean;
   disappearing?: boolean;
+  timeFrozen?: boolean;
 }
 
 interface ObstacleProps {
   position: [number, number, number];
   type: 'spinner' | 'pusher' | 'spikes';
+  timeFrozen?: boolean;
 }
 
-// Helper to get platform collision data
+interface ObstacleData {
+  position: [number, number, number];
+  type: 'spinner' | 'pusher' | 'spikes';
+}
+
+interface PowerUpProps {
+  position: [number, number, number];
+  type: PowerUpType;
+  onCollect: () => void;
+  collected: boolean;
+  playerPos: [number, number, number];
+  magnetActive: boolean;
+}
+
+// Power-up colors and info
+const POWER_UP_CONFIG: Record<PowerUpType, { color: string; emissive: string; icon: string; duration: number }> = {
+  speed: { color: '#ffd700', emissive: '#ffa500', icon: '⚡', duration: 5 },
+  jump: { color: '#00ff00', emissive: '#00cc00', icon: '🦘', duration: 5 },
+  shield: { color: '#00bfff', emissive: '#0080ff', icon: '🛡️', duration: 4 },
+  magnet: { color: '#9932cc', emissive: '#8b008b', icon: '🧲', duration: 6 },
+  freeze: { color: '#ffffff', emissive: '#87ceeb', icon: '❄️', duration: 3 },
+};
+
+// Helper to get platform collision data - CLOSER PLATFORMS
 const getPlatformData = (level: number): { position: [number, number, number]; size: [number, number, number] }[] => {
   const platforms: { position: [number, number, number]; size: [number, number, number] }[] = [];
   
@@ -34,60 +77,146 @@ const getPlatformData = (level: number): { position: [number, number, number]; s
   platforms.push({ position: [0, 0, 0], size: [4, 0.5, 4] });
 
   if (level === 1) {
-    platforms.push({ position: [0, 0, -6], size: [3, 0.5, 3] });
-    platforms.push({ position: [3, 0, -12], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -18], size: [3, 0.5, 3] });
-    platforms.push({ position: [-3, 0, -24], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -30], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -36], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -42], size: [5, 0.5, 5] });
+    // Easy level - closer platforms (4-5 unit gaps instead of 6-8)
+    platforms.push({ position: [0, 0, -4], size: [3, 0.5, 3] });
+    platforms.push({ position: [2, 0, -8], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -12], size: [3, 0.5, 3] });
+    platforms.push({ position: [-2, 0, -16], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -20], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -24], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -28], size: [5, 0.5, 5] });
   } else if (level === 2) {
-    platforms.push({ position: [0, 0, -6], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 1, -14], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -22], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -30], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 0, -36], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 0, -42], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 2, -50], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -58], size: [5, 0.5, 5] });
+    // Medium level - closer moving platforms
+    platforms.push({ position: [0, 0, -4], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0.5, -9], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -14], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -19], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [0, 0, -24], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [0, 0, -29], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 1, -34], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -39], size: [5, 0.5, 5] });
   } else {
-    platforms.push({ position: [0, 0, -6], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 1, -14], size: [2.5, 0.5, 2.5] });
-    platforms.push({ position: [-4, 0, -22], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 0, -22], size: [2, 0.5, 2] });
-    platforms.push({ position: [4, 0, -22], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 0, -30], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 2, -38], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 4, -48], size: [2, 0.5, 2] });
-    platforms.push({ position: [0, 2, -58], size: [2.5, 0.5, 2.5] });
-    platforms.push({ position: [0, 0, -68], size: [3, 0.5, 3] });
-    platforms.push({ position: [0, 0, -78], size: [6, 0.5, 6] });
+    // Hard level - closer but challenging
+    platforms.push({ position: [0, 0, -4], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [0, 0.5, -9], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [-3, 0, -14], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 0, -14], size: [2, 0.5, 2] });
+    platforms.push({ position: [3, 0, -14], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 0, -19], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 1.5, -24], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 2.5, -30], size: [2, 0.5, 2] });
+    platforms.push({ position: [0, 1.5, -36], size: [2.5, 0.5, 2.5] });
+    platforms.push({ position: [0, 0, -42], size: [3, 0.5, 3] });
+    platforms.push({ position: [0, 0, -48], size: [6, 0.5, 6] });
   }
   
   return platforms;
 };
 
-// Player Ball Component
-const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: PlayerProps) => {
+// Power-Up Component
+const PowerUp = ({ position, type, onCollect, collected, playerPos, magnetActive }: PowerUpProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+  const config = POWER_UP_CONFIG[type];
+  const currentPos = useRef<[number, number, number]>([...position]);
+  
+  useFrame((_, delta) => {
+    if (!meshRef.current || collected) return;
+    
+    // Floating animation
+    meshRef.current.rotation.y += delta * 2;
+    meshRef.current.position.y = currentPos.current[1] + Math.sin(Date.now() * 0.003) * 0.2;
+    
+    // Glow pulse
+    if (glowRef.current) {
+      const scale = 1 + Math.sin(Date.now() * 0.005) * 0.2;
+      glowRef.current.scale.set(scale, scale, scale);
+    }
+    
+    // Magnet attraction
+    if (magnetActive) {
+      const dx = playerPos[0] - currentPos.current[0];
+      const dy = playerPos[1] - currentPos.current[1];
+      const dz = playerPos[2] - currentPos.current[2];
+      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      
+      if (dist < 8 && dist > 0.5) {
+        const speed = 5 * delta;
+        currentPos.current[0] += (dx / dist) * speed;
+        currentPos.current[1] += (dy / dist) * speed;
+        currentPos.current[2] += (dz / dist) * speed;
+        meshRef.current.position.x = currentPos.current[0];
+        meshRef.current.position.z = currentPos.current[2];
+      }
+    }
+    
+    // Collection check
+    const dx = playerPos[0] - currentPos.current[0];
+    const dy = playerPos[1] - currentPos.current[1];
+    const dz = playerPos[2] - currentPos.current[2];
+    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    
+    if (dist < 1.2) {
+      onCollect();
+    }
+  });
+  
+  if (collected) return null;
+  
+  return (
+    <group position={position}>
+      {/* Glow effect */}
+      <mesh ref={glowRef}>
+        <sphereGeometry args={[0.6, 16, 16]} />
+        <meshBasicMaterial color={config.emissive} transparent opacity={0.3} />
+      </mesh>
+      
+      {/* Main orb */}
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[0.4, 32, 32]} />
+        <meshStandardMaterial 
+          color={config.color} 
+          emissive={config.emissive}
+          emissiveIntensity={0.5}
+          metalness={0.8}
+          roughness={0.2}
+        />
+      </mesh>
+      
+      {/* Inner glow */}
+      <pointLight color={config.color} intensity={1} distance={3} />
+    </group>
+  );
+};
+
+// Player Ball Component with obstacle collision
+const Player = ({ position, setPosition, onFall, onWin, onHit, gameActive, level, activePowers, obstacles, timeFrozen }: PlayerProps) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const shieldRef = useRef<THREE.Mesh>(null);
   const velocity = useRef({ x: 0, y: 0, z: 0 });
   const isGrounded = useRef(true);
   const keys = useRef({ w: false, a: false, s: false, d: false, space: false });
+  const invincibleTime = useRef(0);
+
+  // Check for active powers
+  const hasSpeed = activePowers.some(p => p.type === 'speed');
+  const hasJump = activePowers.some(p => p.type === 'jump');
+  const hasShield = activePowers.some(p => p.type === 'shield');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'w') keys.current.w = true;
-      if (e.key.toLowerCase() === 'a') keys.current.a = true;
-      if (e.key.toLowerCase() === 's') keys.current.s = true;
-      if (e.key.toLowerCase() === 'd') keys.current.d = true;
+      if (e.key.toLowerCase() === 'w' || e.key === 'ArrowUp') keys.current.w = true;
+      if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') keys.current.a = true;
+      if (e.key.toLowerCase() === 's' || e.key === 'ArrowDown') keys.current.s = true;
+      if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') keys.current.d = true;
       if (e.key === ' ') keys.current.space = true;
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'w') keys.current.w = false;
-      if (e.key.toLowerCase() === 'a') keys.current.a = false;
-      if (e.key.toLowerCase() === 's') keys.current.s = false;
-      if (e.key.toLowerCase() === 'd') keys.current.d = false;
+      if (e.key.toLowerCase() === 'w' || e.key === 'ArrowUp') keys.current.w = false;
+      if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') keys.current.a = false;
+      if (e.key.toLowerCase() === 's' || e.key === 'ArrowDown') keys.current.s = false;
+      if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') keys.current.d = false;
       if (e.key === ' ') keys.current.space = false;
     };
 
@@ -103,13 +232,20 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
   useFrame((_, delta) => {
     if (!meshRef.current || !gameActive) return;
 
-    const moveSpeed = 5;
-    const jumpForce = 8;
+    // Update invincibility timer
+    if (invincibleTime.current > 0) {
+      invincibleTime.current -= delta;
+    }
+
+    const baseSpeed = 5;
+    const moveSpeed = hasSpeed ? baseSpeed * 2 : baseSpeed;
+    const baseJump = 8;
+    const jumpForce = hasJump ? baseJump * 1.5 : baseJump;
     const gravity = 20;
     const maxFallSpeed = 15;
     const friction = 0.85;
 
-    // Horizontal movement (direct velocity setting for snappy control)
+    // Horizontal movement
     if (keys.current.w) velocity.current.z = -moveSpeed;
     else if (keys.current.s) velocity.current.z = moveSpeed;
     else velocity.current.z *= friction;
@@ -131,20 +267,19 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
     }
 
     // Calculate new position
-    const newX = position[0] + velocity.current.x * delta;
-    const newY = position[1] + velocity.current.y * delta;
-    const newZ = position[2] + velocity.current.z * delta;
+    let newX = position[0] + velocity.current.x * delta;
+    let newY = position[1] + velocity.current.y * delta;
+    let newZ = position[2] + velocity.current.z * delta;
 
-    // Platform collision - check if player is above a platform
+    // Platform collision
     const playerRadius = 0.5;
     const platforms = getPlatformData(level);
-    let groundY = -100; // Default to falling
+    let groundY = -100;
     
     for (const platform of platforms) {
       const [px, py, pz] = platform.position;
       const [sx, sy, sz] = platform.size;
       
-      // Check if player is within platform bounds (x and z)
       if (
         newX >= px - sx / 2 - playerRadius &&
         newX <= px + sx / 2 + playerRadius &&
@@ -152,9 +287,62 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
         newZ <= pz + sz / 2 + playerRadius
       ) {
         const platformTop = py + sy / 2;
-        // Check if player is above or landing on platform
         if (position[1] >= platformTop && newY <= platformTop + playerRadius) {
           groundY = Math.max(groundY, platformTop + playerRadius);
+        }
+      }
+    }
+
+    // Obstacle collision (only if not frozen and not invincible)
+    if (!timeFrozen && invincibleTime.current <= 0) {
+      for (const obstacle of obstacles) {
+        const [ox, oy, oz] = obstacle.position;
+        let hitRadius = 1.5;
+        let pushForce = { x: 0, z: 0 };
+        
+        if (obstacle.type === 'spinner') {
+          hitRadius = 3; // Spinner has long reach
+          const dx = newX - ox;
+          const dz = newZ - oz;
+          const dist = Math.sqrt(dx * dx + dz * dz);
+          const dy = Math.abs(newY - oy);
+          
+          if (dist < hitRadius && dy < 1) {
+            if (hasShield) {
+              // Shield absorbs hit
+              invincibleTime.current = 0.5;
+            } else {
+              onHit();
+              invincibleTime.current = 2;
+            }
+          }
+        } else if (obstacle.type === 'pusher') {
+          const dx = newX - ox;
+          const dz = newZ - oz;
+          const dist = Math.sqrt(dx * dx + dz * dz);
+          const dy = Math.abs(newY - oy);
+          
+          if (dist < 2 && dy < 2) {
+            // Push the player away
+            pushForce.x = (dx / dist) * 10;
+            pushForce.z = (dz / dist) * 10;
+            velocity.current.x += pushForce.x;
+            velocity.current.z += pushForce.z;
+          }
+        } else if (obstacle.type === 'spikes') {
+          const dx = newX - ox;
+          const dz = newZ - oz;
+          const dist = Math.sqrt(dx * dx + dz * dz);
+          const dy = newY - oy;
+          
+          if (dist < 1.5 && dy < 1.5 && dy > 0) {
+            if (hasShield) {
+              invincibleTime.current = 0.5;
+            } else {
+              onHit();
+              invincibleTime.current = 2;
+            }
+          }
         }
       }
     }
@@ -174,8 +362,8 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
       onFall();
     }
 
-    // Win detection
-    const winZ = level === 1 ? -40 : level === 2 ? -60 : -80;
+    // Win detection - adjusted for closer platforms
+    const winZ = level === 1 ? -26 : level === 2 ? -37 : -46;
     if (newZ < winZ) {
       onWin();
     }
@@ -184,18 +372,46 @@ const Player = ({ position, setPosition, onFall, onWin, gameActive, level }: Pla
     meshRef.current.position.set(position[0], position[1], position[2]);
     meshRef.current.rotation.x += velocity.current.z * delta * 2;
     meshRef.current.rotation.z -= velocity.current.x * delta * 2;
+
+    // Blink when invincible
+    if (invincibleTime.current > 0) {
+      meshRef.current.visible = Math.floor(invincibleTime.current * 10) % 2 === 0;
+    } else {
+      meshRef.current.visible = true;
+    }
+
+    // Shield visual
+    if (shieldRef.current) {
+      shieldRef.current.position.set(position[0], position[1], position[2]);
+      shieldRef.current.rotation.y += delta * 2;
+      shieldRef.current.visible = hasShield;
+    }
   });
 
   return (
-    <mesh ref={meshRef} position={position} castShadow>
-      <sphereGeometry args={[0.5, 32, 32]} />
-      <meshStandardMaterial color="#ff6b6b" metalness={0.3} roughness={0.4} />
-    </mesh>
+    <>
+      <mesh ref={meshRef} position={position} castShadow>
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshStandardMaterial 
+          color={hasSpeed ? '#ffff00' : '#ff6b6b'} 
+          metalness={0.3} 
+          roughness={0.4}
+          emissive={hasSpeed ? '#ff8800' : '#000000'}
+          emissiveIntensity={hasSpeed ? 0.3 : 0}
+        />
+      </mesh>
+      
+      {/* Shield bubble */}
+      <mesh ref={shieldRef} position={position}>
+        <sphereGeometry args={[0.8, 16, 16]} />
+        <meshBasicMaterial color="#00bfff" transparent opacity={0.3} wireframe />
+      </mesh>
+    </>
   );
 };
 
-// Platform Component
-const Platform = ({ position, size, color, moving, rotating, disappearing }: PlatformProps) => {
+// Platform Component with freeze support
+const Platform = ({ position, size, color, moving, rotating, disappearing, timeFrozen }: PlatformProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [visible, setVisible] = useState(true);
   const initialPos = useRef(position);
@@ -203,9 +419,12 @@ const Platform = ({ position, size, color, moving, rotating, disappearing }: Pla
 
   useFrame((_, delta) => {
     if (!meshRef.current) return;
-    time.current += delta;
+    
+    if (!timeFrozen) {
+      time.current += delta;
+    }
 
-    if (moving) {
+    if (moving && !timeFrozen) {
       const offset = Math.sin(time.current * moving.speed) * moving.range;
       if (moving.axis === 'x') {
         meshRef.current.position.x = initialPos.current[0] + offset;
@@ -214,11 +433,11 @@ const Platform = ({ position, size, color, moving, rotating, disappearing }: Pla
       }
     }
 
-    if (rotating) {
+    if (rotating && !timeFrozen) {
       meshRef.current.rotation.y += delta * 0.5;
     }
 
-    if (disappearing) {
+    if (disappearing && !timeFrozen) {
       const cycle = Math.floor(time.current * 0.5) % 2;
       setVisible(cycle === 0);
     }
@@ -229,24 +448,33 @@ const Platform = ({ position, size, color, moving, rotating, disappearing }: Pla
   return (
     <mesh ref={meshRef} position={position} receiveShadow castShadow>
       <boxGeometry args={size} />
-      <meshStandardMaterial color={color} metalness={0.2} roughness={0.6} />
+      <meshStandardMaterial 
+        color={timeFrozen ? '#87ceeb' : color} 
+        metalness={0.2} 
+        roughness={0.6}
+        emissive={timeFrozen ? '#00bfff' : '#000000'}
+        emissiveIntensity={timeFrozen ? 0.2 : 0}
+      />
     </mesh>
   );
 };
 
-// Obstacle Component
-const Obstacle = ({ position, type }: ObstacleProps) => {
+// Obstacle Component with freeze support
+const Obstacle = ({ position, type, timeFrozen }: ObstacleProps) => {
   const meshRef = useRef<THREE.Group>(null);
   const time = useRef(0);
 
   useFrame((_, delta) => {
     if (!meshRef.current) return;
-    time.current += delta;
+    
+    if (!timeFrozen) {
+      time.current += delta;
 
-    if (type === 'spinner') {
-      meshRef.current.rotation.y += delta * 2;
-    } else if (type === 'pusher') {
-      meshRef.current.position.x = position[0] + Math.sin(time.current * 2) * 3;
+      if (type === 'spinner') {
+        meshRef.current.rotation.y += delta * 2;
+      } else if (type === 'pusher') {
+        meshRef.current.position.x = position[0] + Math.sin(time.current * 2) * 3;
+      }
     }
   });
 
@@ -255,13 +483,25 @@ const Obstacle = ({ position, type }: ObstacleProps) => {
       {type === 'spinner' && (
         <mesh castShadow>
           <boxGeometry args={[6, 0.5, 0.5]} />
-          <meshStandardMaterial color="#e74c3c" metalness={0.5} roughness={0.3} />
+          <meshStandardMaterial 
+            color={timeFrozen ? '#87ceeb' : '#e74c3c'} 
+            metalness={0.5} 
+            roughness={0.3}
+            emissive={timeFrozen ? '#00bfff' : '#ff0000'}
+            emissiveIntensity={timeFrozen ? 0.3 : 0.2}
+          />
         </mesh>
       )}
       {type === 'pusher' && (
         <mesh castShadow>
           <boxGeometry args={[1.5, 2, 1.5]} />
-          <meshStandardMaterial color="#9b59b6" metalness={0.5} roughness={0.3} />
+          <meshStandardMaterial 
+            color={timeFrozen ? '#87ceeb' : '#9b59b6'} 
+            metalness={0.5} 
+            roughness={0.3}
+            emissive={timeFrozen ? '#00bfff' : '#9b59b6'}
+            emissiveIntensity={timeFrozen ? 0.3 : 0.2}
+          />
         </mesh>
       )}
       {type === 'spikes' && (
@@ -269,7 +509,13 @@ const Obstacle = ({ position, type }: ObstacleProps) => {
           {[-1, 0, 1].map((offset) => (
             <mesh key={offset} position={[offset * 0.8, 0.5, 0]} castShadow>
               <coneGeometry args={[0.3, 1, 8]} />
-              <meshStandardMaterial color="#c0392b" metalness={0.6} roughness={0.2} />
+              <meshStandardMaterial 
+                color={timeFrozen ? '#87ceeb' : '#c0392b'} 
+                metalness={0.6} 
+                roughness={0.2}
+                emissive={timeFrozen ? '#00bfff' : '#ff0000'}
+                emissiveIntensity={timeFrozen ? 0.3 : 0.3}
+              />
             </mesh>
           ))}
         </>
@@ -302,66 +548,141 @@ const Checkpoint = ({ position }: { position: [number, number, number] }) => {
   );
 };
 
-// Level Generator
-const generateLevel = (level: number) => {
+// Level Generator with power-ups
+const generateLevel = (level: number): { platforms: PlatformProps[]; obstacles: ObstacleData[]; powerUps: PowerUpData[] } => {
   const platforms: PlatformProps[] = [];
-  const obstacles: ObstacleProps[] = [];
+  const obstacles: ObstacleData[] = [];
+  const powerUps: PowerUpData[] = [];
 
   // Starting platform
   platforms.push({ position: [0, 0, 0], size: [4, 0.5, 4], color: '#3498db' });
 
   if (level === 1) {
-    // Easy level - basic platforms
-    platforms.push({ position: [0, 0, -6], size: [3, 0.5, 3], color: '#2ecc71' });
-    platforms.push({ position: [3, 0, -12], size: [3, 0.5, 3], color: '#e67e22' });
-    platforms.push({ position: [0, 0, -18], size: [3, 0.5, 3], color: '#9b59b6' });
-    platforms.push({ position: [-3, 0, -24], size: [3, 0.5, 3], color: '#1abc9c' });
-    platforms.push({ position: [0, 0, -30], size: [3, 0.5, 3], color: '#e74c3c' });
-    platforms.push({ position: [0, 0, -36], size: [3, 0.5, 3], color: '#f39c12' });
-    platforms.push({ position: [0, 0, -42], size: [5, 0.5, 5], color: '#2ecc71' }); // End
+    // Easy level - closer platforms
+    platforms.push({ position: [0, 0, -4], size: [3, 0.5, 3], color: '#2ecc71' });
+    platforms.push({ position: [2, 0, -8], size: [3, 0.5, 3], color: '#e67e22' });
+    platforms.push({ position: [0, 0, -12], size: [3, 0.5, 3], color: '#9b59b6' });
+    platforms.push({ position: [-2, 0, -16], size: [3, 0.5, 3], color: '#1abc9c' });
+    platforms.push({ position: [0, 0, -20], size: [3, 0.5, 3], color: '#e74c3c' });
+    platforms.push({ position: [0, 0, -24], size: [3, 0.5, 3], color: '#f39c12' });
+    platforms.push({ position: [0, 0, -28], size: [5, 0.5, 5], color: '#2ecc71' }); // End
+    
+    // Power-ups for easy level
+    powerUps.push({ position: [0, 1, -8], type: 'speed', collected: false });
+    powerUps.push({ position: [-2, 1, -16], type: 'jump', collected: false });
+    
   } else if (level === 2) {
-    // Medium level - moving platforms
-    platforms.push({ position: [0, 0, -6], size: [3, 0.5, 3], color: '#2ecc71', moving: { axis: 'x', range: 3, speed: 1 } });
-    platforms.push({ position: [0, 1, -14], size: [3, 0.5, 3], color: '#e67e22' });
-    obstacles.push({ position: [0, 1.5, -14], type: 'spinner' });
-    platforms.push({ position: [0, 0, -22], size: [3, 0.5, 3], color: '#9b59b6', moving: { axis: 'x', range: 4, speed: 1.5 } });
-    platforms.push({ position: [0, 0, -30], size: [2, 0.5, 2], color: '#1abc9c', disappearing: true });
-    platforms.push({ position: [0, 0, -36], size: [2, 0.5, 2], color: '#1abc9c', disappearing: true });
-    platforms.push({ position: [0, 0, -42], size: [3, 0.5, 3], color: '#e74c3c' });
-    platforms.push({ position: [0, 2, -50], size: [3, 0.5, 3], color: '#f39c12' });
-    platforms.push({ position: [0, 0, -58], size: [5, 0.5, 5], color: '#2ecc71' }); // End
+    // Medium level - moving platforms, closer
+    platforms.push({ position: [0, 0, -4], size: [3, 0.5, 3], color: '#2ecc71', moving: { axis: 'x', range: 2, speed: 1 } });
+    platforms.push({ position: [0, 0.5, -9], size: [3, 0.5, 3], color: '#e67e22' });
+    obstacles.push({ position: [0, 1, -9], type: 'spinner' });
+    platforms.push({ position: [0, 0, -14], size: [3, 0.5, 3], color: '#9b59b6', moving: { axis: 'x', range: 3, speed: 1.5 } });
+    platforms.push({ position: [0, 0, -19], size: [2.5, 0.5, 2.5], color: '#1abc9c', disappearing: true });
+    platforms.push({ position: [0, 0, -24], size: [2.5, 0.5, 2.5], color: '#1abc9c', disappearing: true });
+    platforms.push({ position: [0, 0, -29], size: [3, 0.5, 3], color: '#e74c3c' });
+    platforms.push({ position: [0, 1, -34], size: [3, 0.5, 3], color: '#f39c12' });
+    platforms.push({ position: [0, 0, -39], size: [5, 0.5, 5], color: '#2ecc71' }); // End
+    
+    // Power-ups for medium level
+    powerUps.push({ position: [0, 1, -4], type: 'speed', collected: false });
+    powerUps.push({ position: [0, 1.5, -9], type: 'shield', collected: false });
+    powerUps.push({ position: [0, 1, -29], type: 'jump', collected: false });
+    
   } else {
-    // Hard level - everything!
-    platforms.push({ position: [0, 0, -6], size: [2, 0.5, 2], color: '#2ecc71', moving: { axis: 'x', range: 4, speed: 2 } });
-    obstacles.push({ position: [3, 0.5, -6], type: 'pusher' });
-    platforms.push({ position: [0, 1, -14], size: [2.5, 0.5, 2.5], color: '#e67e22', rotating: true });
-    obstacles.push({ position: [0, 1.5, -14], type: 'spinner' });
-    platforms.push({ position: [-4, 0, -22], size: [2, 0.5, 2], color: '#9b59b6', disappearing: true });
-    platforms.push({ position: [0, 0, -22], size: [2, 0.5, 2], color: '#9b59b6', disappearing: true });
-    platforms.push({ position: [4, 0, -22], size: [2, 0.5, 2], color: '#9b59b6', disappearing: true });
-    platforms.push({ position: [0, 0, -30], size: [3, 0.5, 3], color: '#1abc9c' });
-    obstacles.push({ position: [0, 0, -30], type: 'spikes' });
-    platforms.push({ position: [0, 2, -38], size: [2, 0.5, 2], color: '#e74c3c', moving: { axis: 'z', range: 3, speed: 2 } });
-    platforms.push({ position: [0, 4, -48], size: [2, 0.5, 2], color: '#f39c12', moving: { axis: 'x', range: 5, speed: 2.5 } });
-    obstacles.push({ position: [0, 4.5, -48], type: 'spinner' });
-    platforms.push({ position: [0, 2, -58], size: [2.5, 0.5, 2.5], color: '#3498db', rotating: true });
-    platforms.push({ position: [0, 0, -68], size: [3, 0.5, 3], color: '#2ecc71' });
-    platforms.push({ position: [0, 0, -78], size: [6, 0.5, 6], color: '#f1c40f' }); // End
+    // Hard level - everything, closer
+    platforms.push({ position: [0, 0, -4], size: [2.5, 0.5, 2.5], color: '#2ecc71', moving: { axis: 'x', range: 3, speed: 2 } });
+    obstacles.push({ position: [2, 0.5, -4], type: 'pusher' });
+    platforms.push({ position: [0, 0.5, -9], size: [2.5, 0.5, 2.5], color: '#e67e22', rotating: true });
+    obstacles.push({ position: [0, 1, -9], type: 'spinner' });
+    platforms.push({ position: [-3, 0, -14], size: [2, 0.5, 2], color: '#9b59b6', disappearing: true });
+    platforms.push({ position: [0, 0, -14], size: [2, 0.5, 2], color: '#9b59b6', disappearing: true });
+    platforms.push({ position: [3, 0, -14], size: [2, 0.5, 2], color: '#9b59b6', disappearing: true });
+    platforms.push({ position: [0, 0, -19], size: [3, 0.5, 3], color: '#1abc9c' });
+    obstacles.push({ position: [0, 0, -19], type: 'spikes' });
+    platforms.push({ position: [0, 1.5, -24], size: [2, 0.5, 2], color: '#e74c3c', moving: { axis: 'z', range: 2, speed: 2 } });
+    platforms.push({ position: [0, 2.5, -30], size: [2, 0.5, 2], color: '#f39c12', moving: { axis: 'x', range: 3, speed: 2.5 } });
+    obstacles.push({ position: [0, 3, -30], type: 'spinner' });
+    platforms.push({ position: [0, 1.5, -36], size: [2.5, 0.5, 2.5], color: '#3498db', rotating: true });
+    platforms.push({ position: [0, 0, -42], size: [3, 0.5, 3], color: '#2ecc71' });
+    platforms.push({ position: [0, 0, -48], size: [6, 0.5, 6], color: '#f1c40f' }); // End
+    
+    // Power-ups for hard level
+    powerUps.push({ position: [0, 1, -4], type: 'speed', collected: false });
+    powerUps.push({ position: [0, 1.5, -9], type: 'shield', collected: false });
+    powerUps.push({ position: [0, 1, -19], type: 'freeze', collected: false });
+    powerUps.push({ position: [0, 2.5, -24], type: 'jump', collected: false });
+    powerUps.push({ position: [0, 1, -42], type: 'magnet', collected: false });
   }
 
-  return { platforms, obstacles };
+  return { platforms, obstacles, powerUps };
 };
 
-// Camera Controller
-const CameraController = ({ target }: { target: [number, number, number] }) => {
-  const { camera } = useThree();
+// Roblox-style Orbit Camera Controller
+const OrbitCamera = ({ target }: { target: [number, number, number] }) => {
+  const { camera, gl } = useThree();
+  const spherical = useRef(new THREE.Spherical(15, Math.PI / 3, 0));
+  const isDragging = useRef(false);
+  const previousMouse = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const domElement = gl.domElement;
+    
+    const handleMouseDown = (e: MouseEvent) => {
+      if (e.button === 2 || e.button === 0) { // Right click or left click
+        isDragging.current = true;
+        previousMouse.current = { x: e.clientX, y: e.clientY };
+      }
+    };
+    
+    const handleMouseUp = () => {
+      isDragging.current = false;
+    };
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      
+      const deltaX = e.clientX - previousMouse.current.x;
+      const deltaY = e.clientY - previousMouse.current.y;
+      
+      spherical.current.theta -= deltaX * 0.01;
+      spherical.current.phi = Math.max(0.3, Math.min(Math.PI / 2, spherical.current.phi + deltaY * 0.01));
+      
+      previousMouse.current = { x: e.clientX, y: e.clientY };
+    };
+    
+    const handleWheel = (e: WheelEvent) => {
+      spherical.current.radius = Math.max(5, Math.min(30, spherical.current.radius + e.deltaY * 0.02));
+    };
+    
+    const handleContextMenu = (e: Event) => {
+      e.preventDefault();
+    };
+    
+    domElement.addEventListener('mousedown', handleMouseDown);
+    domElement.addEventListener('mouseup', handleMouseUp);
+    domElement.addEventListener('mousemove', handleMouseMove);
+    domElement.addEventListener('wheel', handleWheel);
+    domElement.addEventListener('contextmenu', handleContextMenu);
+    
+    return () => {
+      domElement.removeEventListener('mousedown', handleMouseDown);
+      domElement.removeEventListener('mouseup', handleMouseUp);
+      domElement.removeEventListener('mousemove', handleMouseMove);
+      domElement.removeEventListener('wheel', handleWheel);
+      domElement.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, [gl]);
 
   useFrame(() => {
-    camera.position.lerp(
-      new THREE.Vector3(target[0], target[1] + 8, target[2] + 12),
-      0.05
-    );
-    camera.lookAt(target[0], target[1], target[2]);
+    const targetVec = new THREE.Vector3(target[0], target[1], target[2]);
+    
+    // Convert spherical to cartesian
+    const offset = new THREE.Vector3();
+    offset.setFromSpherical(spherical.current);
+    
+    const desiredPos = targetVec.clone().add(offset);
+    camera.position.lerp(desiredPos, 0.1);
+    camera.lookAt(targetVec);
   });
 
   return null;
@@ -372,22 +693,32 @@ const GameScene = ({
   level,
   onFall,
   onWin,
+  onHit,
   gameActive,
   playerPos,
   setPlayerPos,
+  activePowers,
+  powerUps,
+  onCollectPowerUp,
 }: {
   level: number;
   onFall: () => void;
   onWin: () => void;
+  onHit: () => void;
   gameActive: boolean;
   playerPos: [number, number, number];
   setPlayerPos: (pos: [number, number, number]) => void;
+  activePowers: ActivePower[];
+  powerUps: PowerUpData[];
+  onCollectPowerUp: (index: number) => void;
 }) => {
   const { platforms, obstacles } = generateLevel(level);
+  const timeFrozen = activePowers.some(p => p.type === 'freeze');
+  const magnetActive = activePowers.some(p => p.type === 'magnet');
 
   return (
     <>
-      <CameraController target={playerPos} />
+      <OrbitCamera target={playerPos} />
       <ambientLight intensity={0.4} />
       <directionalLight
         position={[10, 20, 10]}
@@ -405,23 +736,39 @@ const GameScene = ({
         setPosition={setPlayerPos}
         onFall={onFall}
         onWin={onWin}
+        onHit={onHit}
         gameActive={gameActive}
         level={level}
+        activePowers={activePowers}
+        obstacles={obstacles}
+        timeFrozen={timeFrozen}
       />
 
       {platforms.map((platform, i) => (
-        <Platform key={`platform-${i}`} {...platform} />
+        <Platform key={`platform-${i}`} {...platform} timeFrozen={timeFrozen} />
       ))}
 
       {obstacles.map((obstacle, i) => (
-        <Obstacle key={`obstacle-${i}`} {...obstacle} />
+        <Obstacle key={`obstacle-${i}`} {...obstacle} timeFrozen={timeFrozen} />
       ))}
 
-      <Checkpoint position={[0, 0, level === 1 ? -42 : level === 2 ? -58 : -78]} />
+      {powerUps.map((powerUp, i) => (
+        <PowerUp
+          key={`powerup-${i}`}
+          position={powerUp.position}
+          type={powerUp.type}
+          collected={powerUp.collected}
+          playerPos={playerPos}
+          magnetActive={magnetActive}
+          onCollect={() => onCollectPowerUp(i)}
+        />
+      ))}
+
+      <Checkpoint position={[0, 0, level === 1 ? -28 : level === 2 ? -39 : -48]} />
 
       {/* Floor visual (danger zone) */}
-      <mesh position={[0, -15, -40]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[100, 200]} />
+      <mesh position={[0, -15, -25]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[100, 150]} />
         <meshStandardMaterial color="#1a1a2e" transparent opacity={0.8} />
       </mesh>
     </>
@@ -439,11 +786,29 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
   const [lives, setLives] = useState(3);
   const [playerPos, setPlayerPos] = useState<[number, number, number]>([0, 0.5, 0]);
   const [time, setTime] = useState(0);
+  const [activePowers, setActivePowers] = useState<ActivePower[]>([]);
+  const [powerUps, setPowerUps] = useState<PowerUpData[]>([]);
 
+  // Initialize power-ups when starting a level
+  useEffect(() => {
+    if (gameState === 'playing') {
+      const { powerUps: levelPowerUps } = generateLevel(level);
+      setPowerUps(levelPowerUps);
+    }
+  }, [gameState, level]);
+
+  // Update power-up timers
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (gameState === 'playing') {
-      interval = setInterval(() => setTime((t) => t + 1), 1000);
+      interval = setInterval(() => {
+        setTime((t) => t + 1);
+        setActivePowers((powers) => 
+          powers
+            .map(p => ({ ...p, timeLeft: p.timeLeft - 1 }))
+            .filter(p => p.timeLeft > 0)
+        );
+      }, 1000);
     }
     return () => clearInterval(interval);
   }, [gameState]);
@@ -453,6 +818,7 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
     setLives(3);
     setPlayerPos([0, 0.5, 0]);
     setTime(0);
+    setActivePowers([]);
     setGameState('playing');
   };
 
@@ -467,8 +833,36 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
     });
   }, []);
 
+  const handleHit = useCallback(() => {
+    setLives((l) => {
+      if (l <= 1) {
+        setGameState('lost');
+        return 0;
+      }
+      return l - 1;
+    });
+  }, []);
+
   const handleWin = useCallback(() => {
     setGameState('won');
+  }, []);
+
+  const handleCollectPowerUp = useCallback((index: number) => {
+    setPowerUps((pups) => {
+      const newPups = [...pups];
+      if (!newPups[index].collected) {
+        newPups[index] = { ...newPups[index], collected: true };
+        const type = newPups[index].type;
+        const duration = POWER_UP_CONFIG[type].duration;
+        
+        setActivePowers((powers) => {
+          // Remove existing power of same type and add new one
+          const filtered = powers.filter(p => p.type !== type);
+          return [...filtered, { type, timeLeft: duration }];
+        });
+      }
+      return newPups;
+    });
   }, []);
 
   const formatTime = (seconds: number) => {
@@ -490,7 +884,7 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
             
             <div className="space-y-4">
               <p className="text-lg text-white/80">Select Difficulty:</p>
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-4 justify-center flex-wrap">
                 <button
                   onClick={() => startGame(1)}
                   className="px-8 py-4 bg-green-500 hover:bg-green-400 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg shadow-green-500/30"
@@ -512,14 +906,23 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
               </div>
             </div>
 
-            <div className="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm max-w-md mx-auto">
+            <div className="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm max-w-lg mx-auto">
               <h3 className="text-lg font-bold text-white mb-3">Controls:</h3>
-              <div className="grid grid-cols-2 gap-2 text-white/80">
-                <span>W / ↑</span><span>Move Forward</span>
-                <span>S / ↓</span><span>Move Backward</span>
-                <span>A / ←</span><span>Move Left</span>
-                <span>D / →</span><span>Move Right</span>
+              <div className="grid grid-cols-2 gap-2 text-white/80 text-sm">
+                <span>WASD / Arrows</span><span>Move</span>
                 <span>Space</span><span>Jump</span>
+                <span>Mouse Drag</span><span>Rotate Camera</span>
+                <span>Scroll</span><span>Zoom In/Out</span>
+              </div>
+              
+              <h3 className="text-lg font-bold text-white mt-4 mb-2">Power-Ups:</h3>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {Object.entries(POWER_UP_CONFIG).map(([type, config]) => (
+                  <div key={type} className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded">
+                    <span>{config.icon}</span>
+                    <span className="text-xs text-white/80 capitalize">{type}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -541,15 +944,19 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
               level={level}
               onFall={handleFall}
               onWin={handleWin}
+              onHit={handleHit}
               gameActive={true}
               playerPos={playerPos}
               setPlayerPos={setPlayerPos}
+              activePowers={activePowers}
+              powerUps={powerUps}
+              onCollectPowerUp={handleCollectPowerUp}
             />
           </Canvas>
 
           {/* HUD */}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-            <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4 space-y-2">
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
+            <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4 space-y-2 pointer-events-auto">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">❤️</span>
                 <span className="text-white font-bold text-xl">{lives}</span>
@@ -561,19 +968,35 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
               <div className="text-purple-300 text-sm">
                 Level {level} - {level === 1 ? 'Easy' : level === 2 ? 'Medium' : 'Hard'}
               </div>
+              
+              {/* Active Power-Ups */}
+              {activePowers.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-white/20">
+                  {activePowers.map((power, i) => (
+                    <div 
+                      key={i} 
+                      className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded text-sm"
+                      style={{ borderColor: POWER_UP_CONFIG[power.type].color, borderWidth: 1 }}
+                    >
+                      <span>{POWER_UP_CONFIG[power.type].icon}</span>
+                      <span className="text-white">{power.timeLeft}s</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <button
               onClick={() => setGameState('menu')}
-              className="bg-black/50 backdrop-blur-sm rounded-xl px-4 py-2 text-white hover:bg-black/70 transition-all"
+              className="bg-black/50 backdrop-blur-sm rounded-xl px-4 py-2 text-white hover:bg-black/70 transition-all pointer-events-auto"
             >
               ⏸️ Menu
             </button>
           </div>
 
-          {/* Mobile Controls */}
-          <div className="absolute bottom-4 left-4 md:hidden">
-            <div className="text-white/50 text-sm">Use WASD + Space to play</div>
+          {/* Camera instructions */}
+          <div className="absolute bottom-4 left-4 text-white/50 text-sm pointer-events-none">
+            Drag to rotate camera • Scroll to zoom
           </div>
         </>
       )}
@@ -589,7 +1012,7 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
             <p className="text-2xl text-white">
               Time: {formatTime(time)} | Lives Left: {lives}
             </p>
-            <div className="flex gap-4 justify-center mt-8">
+            <div className="flex gap-4 justify-center mt-8 flex-wrap">
               <button
                 onClick={() => startGame(level)}
                 className="px-8 py-4 bg-green-500 hover:bg-green-400 text-white font-bold rounded-xl transition-all hover:scale-105"
@@ -624,7 +1047,7 @@ export const ObbyGame = ({ onExit }: ObbyGameProps) => {
               GAME OVER
             </h2>
             <p className="text-xl text-white/80">You ran out of lives!</p>
-            <div className="flex gap-4 justify-center mt-8">
+            <div className="flex gap-4 justify-center mt-8 flex-wrap">
               <button
                 onClick={() => startGame(level)}
                 className="px-8 py-4 bg-red-500 hover:bg-red-400 text-white font-bold rounded-xl transition-all hover:scale-105"
