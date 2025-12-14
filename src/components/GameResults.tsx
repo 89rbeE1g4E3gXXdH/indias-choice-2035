@@ -7,6 +7,7 @@ import indiaFuture1 from "@/assets/india-future-1.png";
 import indiaFuture2 from "@/assets/india-future-2.png";
 import indiaFuture3 from "@/assets/india-future-3.png";
 import indiaFuture4 from "@/assets/india-future-4.png";
+import certificateQr from "@/assets/certificate-qr.png";
 interface GameResultsProps {
   choices: {
     medicalTech: string;
@@ -518,6 +519,22 @@ export const GameResults = ({
             </div>
           </div>
 
+
+        {/* Certificate QR Section */}
+        <div className="bg-card border border-border rounded-2xl p-8 mb-8 shadow-card animate-scale-in text-center">
+          <h3 className="text-2xl font-bold mb-3 text-foreground">🎓 Congratulations on Your Achievement!</h3>
+          <p className="text-muted-foreground mb-6">
+            Thank you for helping shape the future of India! Scan the QR code below to claim your certificate and celebrate your contribution to our game's success.
+          </p>
+          <div className="flex justify-center mb-4">
+            <img 
+              src={certificateQr} 
+              alt="Scan to claim your certificate" 
+              className="w-48 h-48 rounded-lg border-2 border-primary/30 shadow-glow"
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">Scan with your phone camera to get your personalized certificate</p>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button onClick={onReplay} size="lg" className="bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-105 hover:shadow-[0_0_80px_rgba(255,138,0,0.7)]">
