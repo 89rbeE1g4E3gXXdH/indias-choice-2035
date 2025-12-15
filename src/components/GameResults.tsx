@@ -348,39 +348,39 @@ export const GameResults = ({
     };
   };
   const outcomes = getOutcomes();
-  return <div className="min-h-screen bg-gradient-hero p-6 animate-fade-in relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-hero p-4 sm:p-6 animate-fade-in relative overflow-hidden">
       {/* Confetti effect */}
       {leadershipScore >= 75}
       
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{
+        <div className="absolute bottom-10 right-10 w-72 sm:w-96 h-72 sm:h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{
         animationDelay: '2s'
       }}></div>
         
-        {/* Floating celebration emojis */}
+        {/* Floating celebration emojis - hidden on mobile for performance */}
         {leadershipScore >= 87.5 && <>
-            <div className="absolute top-20 left-20 text-4xl opacity-30 animate-float">🏆</div>
-            <div className="absolute top-40 right-40 text-4xl opacity-30 animate-float" style={{
+            <div className="hidden sm:block absolute top-20 left-20 text-4xl opacity-30 animate-float">🏆</div>
+            <div className="hidden sm:block absolute top-40 right-40 text-4xl opacity-30 animate-float" style={{
           animationDelay: '1s'
         }}>👑</div>
-            <div className="absolute bottom-20 left-1/4 text-4xl opacity-30 animate-float" style={{
+            <div className="hidden sm:block absolute bottom-20 left-1/4 text-4xl opacity-30 animate-float" style={{
           animationDelay: '2s'
         }}>⭐</div>
           </>}
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">🌅 INDIA 2047</h1>
-          <p className="text-xl text-muted-foreground">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-primary bg-clip-text text-transparent">🌅 INDIA 2047</h1>
+          <p className="text-base sm:text-xl text-muted-foreground">
             ✨ A nation shaped by your leadership
           </p>
         </div>
 
         {/* Leadership Meter */}
-        <div className="bg-card border border-border rounded-2xl p-8 mb-8 shadow-card animate-scale-in">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-8 mb-6 sm:mb-8 shadow-card animate-scale-in">
           <div className="text-center mb-6">
             
             
