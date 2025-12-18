@@ -29,7 +29,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [explosion, setExplosion] = useState<{ x: number; y: number } | null>(null);
   const [shake, setShake] = useState(false);
-  const { playSelect, playCountdown, playExplosion } = useSoundEffects();
+  const { playSelect, playCountdown, playUrgentAlarm, playExplosion } = useSoundEffects();
   const lastCountdownRef = useRef<number>(15);
 
   useEffect(() => {
@@ -37,6 +37,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
     setSelectedChoice(null);
     setExplosion(null);
     setShake(false);
+    lastCountdownRef.current = 15;
   }, [round]);
 
   useEffect(() => {
@@ -45,9 +46,15 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
       return;
     }
 
-    // Play countdown sound for last 5 seconds
+    // Play sounds for last 5 seconds
     if (timeLeft <= 5 && timeLeft < lastCountdownRef.current) {
-      playCountdown();
+      if (timeLeft <= 3) {
+        // Blaring urgent alarm for last 3 seconds
+        playUrgentAlarm();
+      } else {
+        // Regular countdown tick
+        playCountdown();
+      }
     }
     lastCountdownRef.current = timeLeft;
 
@@ -56,7 +63,7 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, selectedChoice, onChoice, playCountdown]);
+  }, [timeLeft, selectedChoice, onChoice, playCountdown, playUrgentAlarm]);
 
   const handleChoice = (choice: string, event: React.MouseEvent<HTMLButtonElement>) => {
     setSelectedChoice(choice);

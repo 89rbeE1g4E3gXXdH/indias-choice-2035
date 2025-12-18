@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Credits } from "@/components/Credits";
 import { Progress } from "@/components/ui/progress";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Confetti } from "@/components/Confetti";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import indiaFuture1 from "@/assets/india-future-1.png";
@@ -26,7 +26,8 @@ export const GameResults = ({
   choices,
   onReplay
 }: GameResultsProps) => {
-  const { playSuccess, playClick } = useSoundEffects();
+  const { playSuccess, playClick, playCelebration } = useSoundEffects();
+  const [showCelebrationBurst, setShowCelebrationBurst] = useState(false);
   
   // Array of futuristic India images
   const futuristicIndiaImages = [indiaFuture1, indiaFuture2, indiaFuture3, indiaFuture4];
@@ -35,11 +36,6 @@ export const GameResults = ({
   const imageUrl = useMemo(() => {
     return futuristicIndiaImages[Math.floor(Math.random() * futuristicIndiaImages.length)];
   }, []);
-
-  // Play success sound on mount
-  useEffect(() => {
-    playSuccess();
-  }, [playSuccess]);
 
   // Point values for each choice - varying strategic impact
   const choicePoints: Record<string, number> = {
@@ -88,6 +84,17 @@ export const GameResults = ({
     return score;
   };
   const leadershipScore = calculateLeadershipScore();
+
+  // Play sounds and show celebration burst for high scores
+  useEffect(() => {
+    if (leadershipScore > 70) {
+      playCelebration();
+      setShowCelebrationBurst(true);
+      setTimeout(() => setShowCelebrationBurst(false), 1000);
+    } else {
+      playSuccess();
+    }
+  }, [leadershipScore, playCelebration, playSuccess]);
 
   // Determine leadership style based on choice patterns
   const getLeadershipStyle = () => {
@@ -357,6 +364,25 @@ export const GameResults = ({
   };
   const outcomes = getOutcomes();
   return <div className="min-h-screen bg-gradient-hero p-4 sm:p-6 animate-fade-in relative overflow-hidden">
+      {/* Celebration burst popup for 70%+ */}
+      {showCelebrationBurst && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="animate-scale-in bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-4 border-yellow-300">
+            <div className="text-center">
+              <div className="text-5xl sm:text-7xl mb-2">🎆🎉🎆</div>
+              <div className="text-3xl sm:text-5xl font-bold animate-bounce">70+%!</div>
+              <div className="text-lg sm:text-xl mt-2">AMAZING LEADER!</div>
+            </div>
+          </div>
+          {/* Cracker particles */}
+          <div className="absolute top-1/4 left-1/4 text-4xl animate-ping">🎇</div>
+          <div className="absolute top-1/3 right-1/4 text-4xl animate-ping" style={{animationDelay: '0.1s'}}>✨</div>
+          <div className="absolute bottom-1/3 left-1/3 text-4xl animate-ping" style={{animationDelay: '0.2s'}}>🎆</div>
+          <div className="absolute top-1/4 right-1/3 text-4xl animate-ping" style={{animationDelay: '0.15s'}}>💥</div>
+          <div className="absolute bottom-1/4 right-1/4 text-4xl animate-ping" style={{animationDelay: '0.25s'}}>🎇</div>
+        </div>
+      )}
+      
       {/* Confetti effect */}
       {leadershipScore >= 75}
       
