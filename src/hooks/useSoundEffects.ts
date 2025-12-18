@@ -36,24 +36,9 @@ export const useSoundEffects = () => {
     playTone(800, 0.05, 'square', 0.05);
   }, [playTone]);
 
-  // Satisfying selection sound - longer and more impactful
   const playSelect = useCallback(() => {
-    // Initial impact
-    playTone(400, 0.15, 'sine', 0.12);
-    playTone(600, 0.15, 'triangle', 0.1);
-    // Rising sweep
-    setTimeout(() => playTone(500, 0.2, 'sine', 0.12), 100);
-    setTimeout(() => playTone(700, 0.2, 'sine', 0.12), 200);
-    setTimeout(() => playTone(900, 0.25, 'sine', 0.14), 350);
-    // Satisfying chime cascade
-    setTimeout(() => playTone(1100, 0.3, 'sine', 0.12), 550);
-    setTimeout(() => playTone(880, 0.25, 'sine', 0.1), 750);
-    setTimeout(() => playTone(1100, 0.35, 'sine', 0.1), 950);
-    // Final resonant tone
-    setTimeout(() => playTone(660, 0.5, 'sine', 0.08), 1200);
-    setTimeout(() => playTone(880, 0.6, 'triangle', 0.06), 1500);
-    setTimeout(() => playTone(1320, 0.8, 'sine', 0.05), 2000);
-    setTimeout(() => playTone(880, 0.7, 'sine', 0.04), 2500);
+    playTone(600, 0.08, 'sine', 0.08);
+    setTimeout(() => playTone(900, 0.08, 'sine', 0.06), 50);
   }, [playTone]);
 
   const playSuccess = useCallback(() => {
