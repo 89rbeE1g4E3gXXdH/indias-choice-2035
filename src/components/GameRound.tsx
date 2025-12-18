@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Star } from "lucide-react";
 import { ExplosionEffect } from "@/components/ExplosionEffect";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 
 interface Choice {
   icon: string;
@@ -28,6 +29,8 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [explosion, setExplosion] = useState<{ x: number; y: number } | null>(null);
   const [shake, setShake] = useState(false);
+  const { playSelect, playCountdown, playExplosion } = useSoundEffects();
+  const lastCountdownRef = useRef<number>(15);
 
   useEffect(() => {
     setTimeLeft(15);
@@ -42,15 +45,22 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
       return;
     }
 
+    // Play countdown sound for last 5 seconds
+    if (timeLeft <= 5 && timeLeft < lastCountdownRef.current) {
+      playCountdown();
+    }
+    lastCountdownRef.current = timeLeft;
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, selectedChoice, onChoice]);
+  }, [timeLeft, selectedChoice, onChoice, playCountdown]);
 
   const handleChoice = (choice: string, event: React.MouseEvent<HTMLButtonElement>) => {
     setSelectedChoice(choice);
+    playSelect();
     
     // Trigger explosion at click position
     const rect = event.currentTarget.getBoundingClientRect();
@@ -58,6 +68,9 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
     });
+    
+    // Play explosion sound slightly delayed
+    setTimeout(() => playExplosion(), 100);
     
     // Screen shake effect
     setShake(true);

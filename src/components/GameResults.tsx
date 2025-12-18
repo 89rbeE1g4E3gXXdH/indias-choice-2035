@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Credits } from "@/components/Credits";
 import { Progress } from "@/components/ui/progress";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { Confetti } from "@/components/Confetti";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 import indiaFuture1 from "@/assets/india-future-1.png";
 import indiaFuture2 from "@/assets/india-future-2.png";
 import indiaFuture3 from "@/assets/india-future-3.png";
@@ -25,6 +26,8 @@ export const GameResults = ({
   choices,
   onReplay
 }: GameResultsProps) => {
+  const { playSuccess, playClick } = useSoundEffects();
+  
   // Array of futuristic India images
   const futuristicIndiaImages = [indiaFuture1, indiaFuture2, indiaFuture3, indiaFuture4];
 
@@ -32,6 +35,11 @@ export const GameResults = ({
   const imageUrl = useMemo(() => {
     return futuristicIndiaImages[Math.floor(Math.random() * futuristicIndiaImages.length)];
   }, []);
+
+  // Play success sound on mount
+  useEffect(() => {
+    playSuccess();
+  }, [playSuccess]);
 
   // Point values for each choice - varying strategic impact
   const choicePoints: Record<string, number> = {
@@ -537,11 +545,11 @@ export const GameResults = ({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button onClick={onReplay} size="lg" className="bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-105 hover:shadow-[0_0_80px_rgba(255,138,0,0.7)]">
+          <Button onClick={() => { playClick(); onReplay(); }} size="lg" className="bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-105 hover:shadow-[0_0_80px_rgba(255,138,0,0.7)]">
             🔁 Play Again
           </Button>
           
-          <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-intense transition-all duration-300 hover:scale-105" onClick={() => window.open('https://indias-certify.lovable.app/?utm_source=lovable-editor', '_blank')}>
+          <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-intense transition-all duration-300 hover:scale-105" onClick={() => { playClick(); window.open('https://indias-certify.lovable.app/?utm_source=lovable-editor', '_blank'); }}>
             🏆 Claim Your Certificate
           </Button>
         </div>

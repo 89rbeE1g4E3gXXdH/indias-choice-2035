@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { MouseTracker } from "@/components/MouseTracker";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 import heroImage from "@/assets/india-hero.jpg";
+
 interface GameIntroProps {
   onStart: () => void;
 }
-export const GameIntro = ({
-  onStart
-}: GameIntroProps) => {
+
+export const GameIntro = ({ onStart }: GameIntroProps) => {
+  const { playStart } = useSoundEffects();
+
+  const handleStart = () => {
+    playStart();
+    onStart();
+  };
   return <div className="min-h-screen flex items-center justify-center bg-gradient-hero animate-fade-in overflow-hidden relative">
       <MouseTracker />
       {/* Animated background elements */}
@@ -70,7 +77,7 @@ export const GameIntro = ({
           ⏳ You have 15 seconds per round to decide. Choose wisely.
         </p>
         
-        <Button onClick={onStart} size="lg" className="text-lg sm:text-xl px-8 sm:px-12 py-5 sm:py-6 bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-110 active:scale-95 animate-bounce-slow hover:shadow-[0_0_100px_rgba(255,138,0,0.9)] touch-manipulation">
+        <Button onClick={handleStart} size="lg" className="text-lg sm:text-xl px-8 sm:px-12 py-5 sm:py-6 bg-primary hover:bg-primary-glow shadow-intense transition-all duration-300 hover:scale-110 active:scale-95 animate-bounce-slow hover:shadow-[0_0_100px_rgba(255,138,0,0.9)] touch-manipulation">
           🚀 Start Your Journey
         </Button>
         
