@@ -51,6 +51,13 @@ export const useSoundEffects = () => {
     playTone(440, 0.1, 'sine', 0.06);
   }, [playTone]);
 
+  // Urgent blaring alarm for very low time
+  const playUrgentAlarm = useCallback(() => {
+    playTone(880, 0.15, 'square', 0.15);
+    setTimeout(() => playTone(660, 0.15, 'square', 0.15), 150);
+    setTimeout(() => playTone(880, 0.15, 'square', 0.15), 300);
+  }, [playTone]);
+
   const playExplosion = useCallback(() => {
     playTone(100, 0.3, 'sawtooth', 0.1);
     setTimeout(() => playTone(60, 0.2, 'square', 0.08), 50);
@@ -62,12 +69,24 @@ export const useSoundEffects = () => {
     setTimeout(() => playTone(660, 0.15, 'sine', 0.1), 160);
   }, [playTone]);
 
+  // Celebratory fanfare for high scores
+  const playCelebration = useCallback(() => {
+    playTone(523, 0.12, 'sine', 0.12);
+    setTimeout(() => playTone(659, 0.12, 'sine', 0.12), 100);
+    setTimeout(() => playTone(784, 0.12, 'sine', 0.12), 200);
+    setTimeout(() => playTone(1047, 0.25, 'sine', 0.15), 300);
+    setTimeout(() => playTone(784, 0.1, 'sine', 0.1), 450);
+    setTimeout(() => playTone(1047, 0.3, 'sine', 0.15), 550);
+  }, [playTone]);
+
   return {
     playClick,
     playSelect,
     playSuccess,
     playCountdown,
+    playUrgentAlarm,
     playExplosion,
     playStart,
+    playCelebration,
   };
 };
