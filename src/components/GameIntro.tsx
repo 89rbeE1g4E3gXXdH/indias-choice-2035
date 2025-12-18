@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { MouseTracker } from "@/components/MouseTracker";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useLobbyMusic } from "@/hooks/useLobbyMusic";
 import heroImage from "@/assets/india-hero.jpg";
 
 interface GameIntroProps {
@@ -9,6 +10,9 @@ interface GameIntroProps {
 
 export const GameIntro = ({ onStart }: GameIntroProps) => {
   const { playStart } = useSoundEffects();
+  
+  // Play ambient lobby music while on intro screen
+  useLobbyMusic(true);
 
   const handleStart = () => {
     playStart();
