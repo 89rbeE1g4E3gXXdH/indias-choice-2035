@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Star } from "lucide-react";
 import { ExplosionEffect } from "@/components/ExplosionEffect";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useGameplayMusic } from "@/hooks/useGameplayMusic";
 
 interface Choice {
   icon: string;
@@ -31,6 +32,9 @@ export const GameRound = ({ round, onChoice }: GameRoundProps) => {
   const [shake, setShake] = useState(false);
   const { playSelect, playCountdown, playUrgentAlarm, playExplosion } = useSoundEffects();
   const lastCountdownRef = useRef<number>(15);
+  
+  // Play dramatic music during gameplay
+  useGameplayMusic(true);
 
   useEffect(() => {
     setTimeLeft(15);
