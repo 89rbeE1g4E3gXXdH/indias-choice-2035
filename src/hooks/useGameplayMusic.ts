@@ -1,6 +1,8 @@
 import { useCallback, useRef, useEffect } from 'react';
+import { useAudioContext } from '@/contexts/AudioContext';
 
 export const useGameplayMusic = (isPlaying: boolean) => {
+  const { isMuted } = useAudioContext();
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorsRef = useRef<OscillatorNode[]>([]);
   const gainNodeRef = useRef<GainNode | null>(null);
@@ -35,23 +37,22 @@ export const useGameplayMusic = (isPlaying: boolean) => {
   }, []);
 
   const startMusic = useCallback(() => {
+    if (isMuted) return;
+    
     try {
       const ctx = getAudioContext();
       
-      // Create master gain for volume control
       const masterGain = ctx.createGain();
       masterGain.connect(ctx.destination);
       masterGain.gain.setValueAtTime(0.08, ctx.currentTime);
       gainNodeRef.current = masterGain;
 
-      // Dramatic minor scale notes (A minor - tense/dramatic)
       const melodyNotes = [220, 261.63, 293.66, 329.63, 349.23, 392, 440];
       const bassNotes = [110, 130.81, 146.83, 164.81];
       let noteIndex = 0;
 
-      // Play dramatic melody
       const playMelody = () => {
-        if (!isPlaying) return;
+        if (isMuted) return;
         
         const osc = ctx.createOscillator();
         const noteGain = ctx.createGain();
@@ -65,7 +66,6 @@ export const useGameplayMusic = (isPlaying: boolean) => {
         osc.frequency.value = freq;
         osc.type = 'triangle';
         
-        // Quick attack, moderate sustain
         noteGain.gain.setValueAtTime(0, ctx.currentTime);
         noteGain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.1);
         noteGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.4);
@@ -80,10 +80,9 @@ export const useGameplayMusic = (isPlaying: boolean) => {
         }, 1000);
       };
 
-      // Play driving bass beat
       let bassIndex = 0;
       const playBass = () => {
-        if (!isPlaying) return;
+        if (isMuted) return;
         
         const osc = ctx.createOscillator();
         const noteGain = ctx.createGain();
@@ -97,7 +96,6 @@ export const useGameplayMusic = (isPlaying: boolean) => {
         osc.frequency.value = freq;
         osc.type = 'sine';
         
-        // Punchy bass
         noteGain.gain.setValueAtTime(0.5, ctx.currentTime);
         noteGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
         
@@ -110,23 +108,17 @@ export const useGameplayMusic = (isPlaying: boolean) => {
         }, 400);
       };
 
-      // Start immediately
       playMelody();
       playBass();
       
-      // Melody every 800ms
       intervalRef.current = window.setInterval(playMelody, 800);
-      
-      // Bass beat every 500ms for driving rhythm
       beatIntervalRef.current = window.setInterval(playBass, 500);
       
-    } catch (e) {
-      // Audio not supported
-    }
-  }, [getAudioContext, isPlaying]);
+    } catch (e) {}
+  }, [getAudioContext, isMuted]);
 
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && !isMuted) {
       startMusic();
     } else {
       stopMusic();
@@ -135,7 +127,7 @@ export const useGameplayMusic = (isPlaying: boolean) => {
     return () => {
       stopMusic();
     };
-  }, [isPlaying, startMusic, stopMusic]);
+  }, [isPlaying, isMuted, startMusic, stopMusic]);
 
   return { stopMusic };
 };

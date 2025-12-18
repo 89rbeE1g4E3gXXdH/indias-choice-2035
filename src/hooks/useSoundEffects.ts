@@ -1,6 +1,8 @@
 import { useCallback, useRef } from 'react';
+import { useAudioContext } from '@/contexts/AudioContext';
 
 export const useSoundEffects = () => {
+  const { isMuted } = useAudioContext();
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const getAudioContext = useCallback(() => {
@@ -11,6 +13,8 @@ export const useSoundEffects = () => {
   }, []);
 
   const playTone = useCallback((frequency: number, duration: number, type: OscillatorType = 'sine', volume: number = 0.1) => {
+    if (isMuted) return;
+    
     try {
       const ctx = getAudioContext();
       const oscillator = ctx.createOscillator();
@@ -30,7 +34,7 @@ export const useSoundEffects = () => {
     } catch (e) {
       // Audio not supported or blocked
     }
-  }, [getAudioContext]);
+  }, [getAudioContext, isMuted]);
 
   const playClick = useCallback(() => {
     playTone(800, 0.05, 'square', 0.05);

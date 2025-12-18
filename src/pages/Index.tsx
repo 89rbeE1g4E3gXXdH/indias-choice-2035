@@ -5,6 +5,7 @@ import { GameResults } from "@/components/GameResults";
 import { TntBlastTransition } from "@/components/TntBlastTransition";
 import { AyanMiniGame } from "@/components/AyanMiniGame";
 import { ObbyGame } from "@/components/ObbyGame";
+import { MuteToggle } from "@/components/MuteToggle";
 type GameStage = "intro" | "round1" | "round2" | "round3" | "round4" | "round5" | "round6" | "round7" | "round8" | "tnt-blast" | "results" | "easter-egg";
 interface Choices {
   medicalTech: string;
@@ -285,6 +286,7 @@ const Index = () => {
     setStage("intro");
   };
   return <>
+      <MuteToggle />
       {stage === "intro" && <GameIntro onStart={handleStart} />}
       {stage === "round1" && <GameRound round={rounds[0]} onChoice={handleRound1Choice} />}
       {stage === "round2" && <GameRound round={rounds[1]} onChoice={handleRound2Choice} />}
