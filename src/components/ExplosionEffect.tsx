@@ -26,18 +26,18 @@ export const ExplosionEffect = ({ x, y, onComplete }: ExplosionEffectProps) => {
     ];
 
     const newParticles: Particle[] = [];
-    const particleCount = 30;
+    const particleCount = 12;
 
     for (let i = 0; i < particleCount; i++) {
       const angle = (Math.PI * 2 * i) / particleCount;
-      const velocity = 150 + Math.random() * 100;
+      const velocity = 80 + Math.random() * 50;
       
       newParticles.push({
         id: i,
         x: Math.cos(angle) * velocity,
         y: Math.sin(angle) * velocity,
         color: colors[Math.floor(Math.random() * colors.length)],
-        size: 4 + Math.random() * 8,
+        size: 3 + Math.random() * 5,
       });
     }
 
@@ -58,16 +58,13 @@ export const ExplosionEffect = ({ x, y, onComplete }: ExplosionEffectProps) => {
         top: `${y}px`,
       }}
     >
-      {/* Expanding rings */}
+      {/* Expanding ring */}
       <div className="absolute -translate-x-1/2 -translate-y-1/2">
-        <div className="w-32 h-32 border-4 border-primary rounded-full animate-ring-expand"></div>
-      </div>
-      <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ animationDelay: '100ms' }}>
-        <div className="w-32 h-32 border-4 border-accent rounded-full animate-ring-expand"></div>
+        <div className="w-20 h-20 border-2 border-primary rounded-full animate-ring-expand opacity-60"></div>
       </div>
 
       {/* Flash effect */}
-      <div className="absolute -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/50 rounded-full blur-3xl animate-ping"></div>
+      <div className="absolute -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/30 rounded-full blur-2xl animate-ping"></div>
 
       {/* Particles */}
       {particles.map((particle) => (

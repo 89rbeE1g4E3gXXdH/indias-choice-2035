@@ -12,10 +12,10 @@ export const Confetti = () => {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
 
   useEffect(() => {
-    const emojis = ['🎉', '🎊', '✨', '🌟', '💫', '⭐', '🏆', '🎯', '🚀', '💪'];
+    const emojis = ['🎉', '✨', '🌟', '⭐', '🏆'];
     const pieces: ConfettiPiece[] = [];
     
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 20; i++) {
       pieces.push({
         id: i,
         left: Math.random() * 100,
