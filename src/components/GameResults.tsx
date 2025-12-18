@@ -90,7 +90,7 @@ export const GameResults = ({
     if (leadershipScore > 70) {
       playCelebration();
       setShowCelebrationBurst(true);
-      setTimeout(() => setShowCelebrationBurst(false), 1000);
+      setTimeout(() => setShowCelebrationBurst(false), 3000);
     } else {
       playSuccess();
     }
